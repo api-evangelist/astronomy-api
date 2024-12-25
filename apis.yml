@@ -15,7 +15,6 @@ apis:
       information.
     image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     humanURL: https://docs.astronomyapi.com/
-    overlays: []
 maintainers:
   - FN: API Evangelist
     email: info@apievangelist.com
