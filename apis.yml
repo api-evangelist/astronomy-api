@@ -1,6 +1,5 @@
 name: AstronomyAPI
-description: >-
-  Welcome to Astronomy API, a web API for retrieving astronomical information.
+description: Welcome to Astronomy API, a web API for retrieving astronomical information.
 image: >-
   https://kinlane-productions2.s3.amazonaws.com/apis-json-icons/getting-started-v2-astronomyapi.png
 url: https://example.com/apis/getting-started-v2-astronomyapi.yml
@@ -20,6 +19,3 @@ apis:
 maintainers:
   - FN: API Evangelist
     email: info@apievangelist.com
-overlays:
-  - type: APIs.io Search
-    url: overlays/apis-io-search.yml
