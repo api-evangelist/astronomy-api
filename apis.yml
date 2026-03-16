@@ -1,20 +1,49 @@
+aid: astronomy-api
 name: AstronomyAPI
-description: Welcome to Astronomy API, a web API for retrieving astronomical information.
-image: >-
-  https://kinlane-productions2.s3.amazonaws.com/apis-json-icons/getting-started-v2-astronomyapi.png
-url: https://example.com/apis/getting-started-v2-astronomyapi.yml
-created: 2024/3/30
-modified: 2024/3/30
-specificationVersion: '0.16'
+description: >-
+  AstronomyAPI is a web API for retrieving astronomical information including
+  data about celestial bodies, moon phases, planet positions, star charts, and
+  astronomical events for a given location and time.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-  - Bookmarks
+  - Astronomy
+  - Space
+  - Celestial Data
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/astronomy-api/refs/heads/main/apis.yml
+created: '2024-03-30'
+modified: '2026-03-16'
+specificationVersion: '0.19'
 apis:
-  - name: Getting Started | v2 | AstronomyAPI
+  - aid: astronomy-api:astronomy-api
+    name: AstronomyAPI
     description: >-
-      Welcome to Astronomy API, a web API for retrieving astronomical
-      information.
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      The AstronomyAPI provides access to astronomical data including moon
+      phases, planet positions, star charts, and celestial events for any
+      location and time.
     humanURL: https://docs.astronomyapi.com/
+    baseURL: https://api.astronomyapi.com/api/v2
+    tags:
+      - Astronomy
+      - Moon
+      - Planets
+    properties:
+      - type: Documentation
+        url: https://docs.astronomyapi.com/
+      - type: Getting Started
+        url: https://docs.astronomyapi.com/getting-started
+      - type: Authentication
+        url: https://docs.astronomyapi.com/authentication
+common:
+  - type: Website
+    url: https://astronomyapi.com/
+  - type: Documentation
+    url: https://docs.astronomyapi.com/
+  - type: Sign Up
+    url: https://astronomyapi.com/auth/signup
+  - type: Pricing
+    url: https://astronomyapi.com/pricing
 maintainers:
-  - FN: API Evangelist
-    email: info@apievangelist.com
+  - FN: Kin Lane
+    email: kin@apievangelist.com
