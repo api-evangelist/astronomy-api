@@ -8,8 +8,8 @@ type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
   - Astronomy
-  - Space
   - Celestial Data
+  - Space
 url: >-
   https://raw.githubusercontent.com/api-evangelist/astronomy-api/refs/heads/main/apis.yml
 created: '2024-03-30'
