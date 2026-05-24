@@ -105,6 +105,8 @@ common:
         description: >-
           Planetarium and sky simulation software integrates celestial body
           position data from the Astronomy API for accurate sky rendering.
+  - type: LLMsTxt
+    url: https://astronomyapi.com/llms.txt
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
