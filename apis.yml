@@ -8,7 +8,7 @@ description: >-
   generation, moon phase imagery, and deep space object search capabilities for
   any geographic location and date/time combination.
 type: Index
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Astronomy
   - Celestial Data
