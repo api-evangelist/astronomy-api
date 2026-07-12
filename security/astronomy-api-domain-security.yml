@@ -1,0 +1,26 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: astronomyapi.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Feb 25 23:59:59 2027 GMT
+  hsts: false
+- host: docs.astronomyapi.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep  1 00:41:56 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api.astronomyapi.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 15 23:59:59 2026 GMT
+  hsts: null
+domains:
+- domain: astronomyapi.com
+  dnssec: false
+  caa: []
+  spf: false
+  dmarc: false

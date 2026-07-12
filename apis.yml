@@ -42,6 +42,10 @@ apis:
       - type: GettingStarted
         url: https://docs.astronomyapi.com/getting-started
 common:
+  - type: DomainSecurity
+    url: security/astronomy-api-domain-security.yml
+  - type: Authentication
+    url: authentication/astronomy-api-authentication.yml
   - type: GitHubOrganization
     url: https://github.com/AstronomyAPI
   - type: Portal

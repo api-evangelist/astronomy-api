@@ -1,0 +1,16 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/astronomy-api-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: basicAuth
+  type: http
+  scheme: basic
+  description: |-
+    HTTP Basic auth: username is the Application ID and password is the
+    Application Secret. The client typically sends
+    `Authorization: Basic base64(applicationId:applicationSecret)`.
+  sources:
+  - openapi/astronomy-api-openapi.yml
