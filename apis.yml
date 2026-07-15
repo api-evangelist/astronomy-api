@@ -42,6 +42,8 @@ apis:
       - type: GettingStarted
         url: https://docs.astronomyapi.com/getting-started
 common:
+  - type: AgenticAccess
+    url: agentic-access/astronomy-api-agentic-access.yml
   - type: DomainSecurity
     url: security/astronomy-api-domain-security.yml
   - type: Authentication
