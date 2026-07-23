@@ -1,0 +1,89 @@
+openapi: 3.1.0
+info:
+  title: Astronomy Bodies Events API
+  version: '2.0'
+  description: 'AstronomyAPI is a web API for retrieving astronomical information
+
+    including celestial body positions, moon phase imagery, star charts,
+
+    astronomical events, and deep space object search for any geographic
+
+    location and date/time combination.
+
+    '
+  contact:
+    name: AstronomyAPI
+    url: https://astronomyapi.com
+servers:
+- url: https://api.astronomyapi.com/api/v2
+  description: Astronomy API v2
+tags:
+- name: Events
+  description: Astronomical events for a given location and date range
+paths:
+  /bodies/events/{body}:
+    get:
+      tags:
+      - Events
+      summary: Get celestial events for a body
+      security:
+      - basicAuth: []
+      parameters:
+      - name: body
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: latitude
+        in: query
+        required: true
+        schema:
+          type: number
+          format: float
+      - name: longitude
+        in: query
+        required: true
+        schema:
+          type: number
+          format: float
+      - name: elevation
+        in: query
+        schema:
+          type: number
+          format: float
+      - name: from_date
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: to_date
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: time
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Event data
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: 'HTTP Basic auth: username is the Application ID and password is the
+
+        Application Secret. The client typically sends
+
+        `Authorization: Basic base64(applicationId:applicationSecret)`.
+
+        '

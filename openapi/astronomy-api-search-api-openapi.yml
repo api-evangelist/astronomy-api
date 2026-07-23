@@ -1,0 +1,78 @@
+openapi: 3.1.0
+info:
+  title: Astronomy Bodies Search API
+  version: '2.0'
+  description: 'AstronomyAPI is a web API for retrieving astronomical information
+
+    including celestial body positions, moon phase imagery, star charts,
+
+    astronomical events, and deep space object search for any geographic
+
+    location and date/time combination.
+
+    '
+  contact:
+    name: AstronomyAPI
+    url: https://astronomyapi.com
+servers:
+- url: https://api.astronomyapi.com/api/v2
+  description: Astronomy API v2
+tags:
+- name: Search
+  description: Search for stars and deep space objects
+paths:
+  /search:
+    get:
+      tags:
+      - Search
+      summary: Search for stars and deep space objects
+      security:
+      - basicAuth: []
+      parameters:
+      - name: term
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: match_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - fuzzy
+          - exact
+      - name: ra
+        in: query
+        schema:
+          type: number
+      - name: dec
+        in: query
+        schema:
+          type: number
+      - name: order_by
+        in: query
+        schema:
+          type: string
+      - name: limit
+        in: query
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Search results
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: 'HTTP Basic auth: username is the Application ID and password is the
+
+        Application Secret. The client typically sends
+
+        `Authorization: Basic base64(applicationId:applicationSecret)`.
+
+        '
