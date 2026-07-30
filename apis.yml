@@ -8,7 +8,20 @@ description: >-
   generation, moon phase imagery, and deep space object search capabilities for
   any geographic location and date/time combination.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/astronomy-api.png
 tags:
   - Astronomy
   - Celestial Data
@@ -21,26 +34,65 @@ created: '2024-03-30'
 modified: '2026-04-19'
 specificationVersion: '0.19'
 apis:
-  - aid: astronomy-api:astronomy-api
-    name: Astronomy API
-    description: >-
-      The Astronomy API provides access to astronomical data including celestial
-      body positions, moon phases, planet positions, star charts, astronomical
-      events, and deep space object search for any location and time. Endpoints
-      cover bodies, positions, events, studio image generation, star charts,
-      moon phase imagery, and search for stars and deep space objects.
-    humanURL: https://docs.astronomyapi.com/
-    baseURL: https://api.astronomyapi.com/api/v2
-    tags:
-      - Astronomy
-      - Moon
-      - Planets
-      - Star Charts
-    properties:
-      - type: Documentation
-        url: https://docs.astronomyapi.com/
-      - type: GettingStarted
-        url: https://docs.astronomyapi.com/getting-started
+- aid: astronomy-api:astronomy-api
+  name: Astronomy API
+  description: >-
+    The Astronomy API provides access to astronomical data including celestial body positions, moon phases,
+    planet positions, star charts, astronomical events, and deep space object search for any location
+    and time. Endpoints cover bodies, positions, events, studio image generation, star charts, moon phase
+    imagery, and search for stars and deep space objects.
+  humanURL: https://docs.astronomyapi.com/
+  baseURL: https://api.astronomyapi.com/api/v2
+  tags:
+  - Astronomy
+  - Moon
+  - Planets
+  - Star Charts
+  properties:
+  - type: Documentation
+    url: https://docs.astronomyapi.com/
+  - type: GettingStarted
+    url: https://docs.astronomyapi.com/getting-started
+- aid: astronomy-api:astronomy-api-bodies-api
+  name: Astronomy API Bodies API
+  description: Celestial body information and positions
+  humanURL: https://docs.astronomyapi.com/
+  baseURL: https://api.astronomyapi.com/api/v2
+  tags:
+  - Bodies
+  properties:
+  - type: OpenAPI
+    url: openapi/astronomy-api-bodies-api-openapi.yml
+- aid: astronomy-api:astronomy-api-events-api
+  name: Astronomy API Events API
+  description: Astronomical events for a given location and date range
+  humanURL: https://docs.astronomyapi.com/
+  baseURL: https://api.astronomyapi.com/api/v2
+  tags:
+  - Events
+  properties:
+  - type: OpenAPI
+    url: openapi/astronomy-api-events-api-openapi.yml
+- aid: astronomy-api:astronomy-api-search-api
+  name: Astronomy API Search API
+  description: Search for stars and deep space objects
+  humanURL: https://docs.astronomyapi.com/
+  baseURL: https://api.astronomyapi.com/api/v2
+  tags:
+  - Search
+  properties:
+  - type: OpenAPI
+    url: openapi/astronomy-api-search-api-openapi.yml
+- aid: astronomy-api:astronomy-api-studio-api
+  name: Astronomy API Studio API
+  description: Generated imagery (moon phase and star charts)
+  humanURL: https://docs.astronomyapi.com/
+  baseURL: https://api.astronomyapi.com/api/v2
+  tags:
+  - Studio
+  properties:
+  - type: OpenAPI
+    url: openapi/astronomy-api-studio-api-openapi.yml
 common:
   - type: AgenticAccess
     url: agentic-access/astronomy-api-agentic-access.yml
