@@ -1,0 +1,20 @@
+{
+  "provider": "astronomy-api",
+  "sources": [
+    "astronomy-api-bodies-api-openapi.yml",
+    "astronomy-api-events-api-openapi.yml",
+    "astronomy-api-search-api-openapi.yml",
+    "astronomy-api-studio-api-openapi.yml"
+  ],
+  "outputs": [
+    "astronomy-api-bodies-api-openapi.yml",
+    "astronomy-api-events-api-openapi.yml",
+    "astronomy-api-search-api-openapi.yml",
+    "astronomy-api-studio-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
