@@ -1,0 +1,236 @@
+{
+  "item": [
+    {
+      "id": "62594ef5-304e-410b-9c66-78826e41ebcc",
+      "name": "Studio",
+      "description": {
+        "content": "Generated imagery (moon phase and star charts)",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "49cab612-4d13-4795-9365-8251ce6ff361",
+          "name": "Generate a moon phase image",
+          "request": {
+            "name": "Generate a moon phase image",
+            "description": {},
+            "url": {
+              "path": [
+                "studio",
+                "moon-phase"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "{{basicAuthUsername}}"
+                },
+                {
+                  "key": "password",
+                  "value": "{{basicAuthPassword}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"format\": \"<string>\",\n  \"style\": \"<object>\",\n  \"observer\": {\n    \"latitude\": \"<number>\",\n    \"longitude\": \"<number>\",\n    \"date\": \"<date>\"\n  },\n  \"view\": {\n    \"type\": \"<string>\",\n    \"orientation\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d65a6a4c-a766-4949-8eee-5d19846783de",
+              "name": "Image URL returned in payload",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "studio",
+                    "moon-phase"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"format\": \"<string>\",\n  \"style\": \"<object>\",\n  \"observer\": {\n    \"latitude\": \"<number>\",\n    \"longitude\": \"<number>\",\n    \"date\": \"<date>\"\n  },\n  \"view\": {\n    \"type\": \"<string>\",\n    \"orientation\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "14328b20-6bb2-4186-94a9-81f192813421",
+          "name": "Generate a star chart image",
+          "request": {
+            "name": "Generate a star chart image",
+            "description": {},
+            "url": {
+              "path": [
+                "studio",
+                "star-chart"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "{{basicAuthUsername}}"
+                },
+                {
+                  "key": "password",
+                  "value": "{{basicAuthPassword}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"style\": \"<string>\",\n  \"observer\": {\n    \"latitude\": \"<number>\",\n    \"longitude\": \"<number>\",\n    \"date\": \"<date>\"\n  },\n  \"view\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "777f49f9-a5d1-4990-b73c-ddb9339a810c",
+              "name": "Star chart image URL",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "studio",
+                    "star-chart"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"style\": \"<string>\",\n  \"observer\": {\n    \"latitude\": \"<number>\",\n    \"longitude\": \"<number>\",\n    \"date\": \"<date>\"\n  },\n  \"view\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.astronomyapi.com/api/v2",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "10495ebf-a300-436e-b771-b04f8834b49d",
+    "name": "Astronomy Bodies Studio API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "AstronomyAPI is a web API for retrieving astronomical information\nincluding celestial body positions, moon phase imagery, star charts,\nastronomical events, and deep space object search for any geographic\nlocation and date/time combination.\n\n\nContact Support:\n Name: AstronomyAPI",
+      "type": "text/plain"
+    }
+  }
+}

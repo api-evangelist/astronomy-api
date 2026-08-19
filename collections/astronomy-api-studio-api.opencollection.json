@@ -1,0 +1,58 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Astronomy Bodies Studio API",
+    "version": "2.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Studio",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Generate a moon phase image",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.astronomyapi.com/api/v2/studio/moon-phase",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Generate a moon phase image"
+        },
+        {
+          "info": {
+            "name": "Generate a star chart image",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.astronomyapi.com/api/v2/studio/star-chart",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Generate a star chart image"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

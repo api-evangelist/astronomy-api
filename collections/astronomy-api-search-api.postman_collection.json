@@ -1,0 +1,175 @@
+{
+  "item": [
+    {
+      "id": "89e9722b-1fa5-4c52-88a9-d2ba479d2452",
+      "name": "Search",
+      "description": {
+        "content": "Search for stars and deep space objects",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "530f0fc0-e0d8-4726-b01c-a503f303cde5",
+          "name": "Search for stars and deep space objects",
+          "request": {
+            "name": "Search for stars and deep space objects",
+            "description": {},
+            "url": {
+              "path": [
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "term",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "match_type",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "ra",
+                  "value": "<number>"
+                },
+                {
+                  "disabled": false,
+                  "key": "dec",
+                  "value": "<number>"
+                },
+                {
+                  "disabled": false,
+                  "key": "order_by",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "<integer>"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "{{basicAuthUsername}}"
+                },
+                {
+                  "key": "password",
+                  "value": "{{basicAuthPassword}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8a50bc8e-a067-424b-aca0-cf88c98978e6",
+              "name": "Search results",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "term",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "match_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ra",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "dec",
+                      "value": "<number>"
+                    },
+                    {
+                      "key": "order_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: basic",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Basic <credentials>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.astronomyapi.com/api/v2",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "c174a918-abeb-4b12-90db-acc5ca9a8259",
+    "name": "Astronomy Bodies Search API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "AstronomyAPI is a web API for retrieving astronomical information\nincluding celestial body positions, moon phase imagery, star charts,\nastronomical events, and deep space object search for any geographic\nlocation and date/time combination.\n\n\nContact Support:\n Name: AstronomyAPI",
+      "type": "text/plain"
+    }
+  }
+}
