@@ -69,6 +69,8 @@ apis:
   humanURL: https://docs.astronomyapi.com/
   baseURL: https://api.astronomyapi.com/api/v2
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
