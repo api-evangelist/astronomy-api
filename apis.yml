@@ -44,7 +44,7 @@ tags:
 url: >-
   https://raw.githubusercontent.com/api-evangelist/astronomy-api/refs/heads/main/apis.yml
 created: '2024-03-30'
-modified: '2026-04-19'
+modified: '2026-09-04'
 specificationVersion: '0.23'
 apis:
 - aid: astronomy-api:astronomy-api
@@ -65,7 +65,11 @@ apis:
   - type: Documentation
     url: https://docs.astronomyapi.com/
   - type: GettingStarted
-    url: https://docs.astronomyapi.com/getting-started
+    url: https://docs.astronomyapi.com/
+    title: Getting Started
+  - type: APIReference
+    url: https://docs.astronomyapi.com/endpoints/bodies
+    title: Endpoint reference
 - aid: astronomy-api:astronomy-api-bodies-api
   name: Astronomy API Bodies API
   description: Celestial body information and positions
@@ -76,6 +80,8 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/astronomy-api-bodies-api-openapi.yml
+  - type: Overlay
+    url: overlays/astronomy-api-bodies-api-overlay.yaml
 - aid: astronomy-api:astronomy-api-events-api
   name: Astronomy API Events API
   description: Astronomical events for a given location and date range
@@ -88,6 +94,8 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/astronomy-api-events-api-openapi.yml
+  - type: Overlay
+    url: overlays/astronomy-api-events-api-overlay.yaml
 - aid: astronomy-api:astronomy-api-search-api
   name: Astronomy API Search API
   description: Search for stars and deep space objects
@@ -98,6 +106,8 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/astronomy-api-search-api-openapi.yml
+  - type: Overlay
+    url: overlays/astronomy-api-search-api-overlay.yaml
 - aid: astronomy-api:astronomy-api-studio-api
   name: Astronomy API Studio API
   description: Generated imagery (moon phase and star charts)
@@ -108,7 +118,41 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/astronomy-api-studio-api-openapi.yml
+  - type: Overlay
+    url: overlays/astronomy-api-studio-api-overlay.yaml
+- aid: astronomy-api:astronomy-api-v3
+  name: Astronomy API v3
+  description: >-
+    Version 3 of the Astronomy API, published by the provider as a reference
+    draft with a complete OpenAPI 3.1 definition before it ships — "so that the
+    design can be read and argued with". A breaking redesign of the v2 request
+    and response shapes: JSON numbers instead of strings, one representation per
+    value, a declared meta.units block, ISO 8601 instants with an explicit
+    sampling step and timezone, cursor pagination on positions, RFC 9457 problem
+    details, bearer authentication, and apsis events alongside eclipses. Five
+    operations across positions, events, search and the two studio renderers.
+    NOT YET IN PRODUCTION — /api/v2 remains the callable surface.
+  humanURL: https://docs.astronomyapi.com/api-v3-reference-draft/v3
+  baseURL: https://api.astronomyapi.com/api/v3
+  tags:
+  - Astronomy
+  - Positions
+  - Events
+  - Star Charts
+  properties:
+  - type: OpenAPI
+    url: openapi/astronomy-api-v3-openapi.yaml
+  - type: Overlay
+    url: overlays/astronomy-api-v3-overlay.yaml
+  - type: Documentation
+    url: https://docs.astronomyapi.com/api-v3-reference-draft/v3
+    title: v3 reference draft
+  - type: Documentation
+    url: https://docs.astronomyapi.com/api-v3-reference-draft/v3/migrating-from-v2
+    title: Migrating from v2
 common:
+  - type: Website
+    url: https://astronomyapi.com/
   - type: AgenticAccess
     url: agentic-access/astronomy-api-agentic-access.yml
   - type: DomainSecurity
@@ -126,9 +170,6 @@ common:
   - type: Signup
     url: https://astronomyapi.com/auth/signup
     title: Sign Up
-  - type: Pricing
-    url: https://astronomyapi.com/pricing
-    title: Pricing
   - type: Features
     data:
       - name: Celestial Body Positions
@@ -179,7 +220,49 @@ common:
           Planetarium and sky simulation software integrates celestial body
           position data from the Astronomy API for accurate sky rendering.
   - type: LlmsText
-    url: https://astronomyapi.com/llms.txt
+    url: https://docs.astronomyapi.com/llms.txt
+    title: llms.txt (documentation host)
+  - type: ChangeLog
+    url: https://docs.astronomyapi.com/changelog
+    title: Changelog
+  - type: TermsOfService
+    url: https://astronomyapi.com/terms-of-service
+    title: Terms of Service
+  - type: PrivacyPolicy
+    url: https://astronomyapi.com/privacy-policy
+    title: Privacy Policy
+  - type: Support
+    url: https://github.com/AstronomyAPI/Samples/issues
+    title: Support (GitHub issues, per the provider's Getting Started page)
+  - type: Conventions
+    url: conventions/astronomy-api-conventions.yml
+  - type: ErrorCatalog
+    url: errors/astronomy-api-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/astronomy-api-lifecycle.yml
+  - type: Conformance
+    url: conformance/astronomy-api-conformance.yml
+  - type: DataModel
+    url: data-model/astronomy-api-data-model.yml
+  - type: Packages
+    url: packages/astronomy-api-packages.yml
+  - type: SDKs
+    url: packages/astronomy-api-packages.yml
+  - type: Components
+    url: components/astronomy-api-components.yml
+  - type: RateLimits
+    url: rate-limits/astronomy-api-rate-limits.yml
+  - type: ToolCrosswalk
+    url: mcp/astronomy-api-tool-crosswalk.yml
+  - type: X-MCPServerCandidate
+    url: mcp/astronomy-api-mcp.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+x-enrichment:
+  date: '2026-09-04'
+  status: enriched
+  artifacts_added: 23
+  pass: local-v3
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

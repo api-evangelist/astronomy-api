@@ -1,0 +1,141 @@
+generated: '2026-09-04'
+method: derived
+source: >-
+  openapi/astronomy-api-v3-openapi.yaml, the four v2 definitions in openapi/,
+  https://docs.astronomyapi.com/ and https://docs.astronomyapi.com/llms.txt.
+  Every entry below is asserted against a fetched artifact, not a marketing
+  claim; no compliance or certification page exists on this provider's surface.
+provider: Astronomy API
+providerId: astronomy-api
+description: >-
+  Cross-cutting standards conformance for Astronomy API. The story is a split
+  one: the v3 reference draft adopts several modern conventions the production
+  v2 surface does not have.
+conformance:
+  - id: openapi-3.1
+    name: OpenAPI 3.1
+    conforms: true
+    evidence: >-
+      openapi/astronomy-api-v3-openapi.yaml declares `openapi: 3.1.0` and is
+      published by the provider itself, embedded in the v3 reference pages on
+      docs.astronomyapi.com and served from the provider's own GitBook space.
+      Parsed clean; 5 operations, 27 component schemas, 22 reusable parameters.
+    scope: v3
+  - id: rfc9457
+    name: RFC 9457 Problem Details for HTTP APIs
+    conforms: true
+    evidence: >-
+      components.schemas.Problem in the v3 definition carries the required
+      `type`/`title`/`status` members plus `detail`, and every 400/401/422
+      response is `application/problem+json`. The schema description names the
+      RFC, and the v3 overview links to rfc-editor.org/rfc/rfc9457.
+    scope: v3
+    note: >-
+      NOT true of v2, which returns a raw validator dump under `errors` with no
+      stable code. See errors/astronomy-api-problem-types.yml.
+  - id: http-bearer
+    name: RFC 6750 Bearer token (HTTP Authorization)
+    conforms: true
+    evidence: >-
+      components.securitySchemes.applicationKey — `type: http, scheme: bearer`,
+      described as "The application key, sent as Authorization: Bearer <key>.
+      Keys are never accepted in the query string, where they would be recorded
+      in logs and browser history."
+    scope: v3
+  - id: http-basic
+    name: RFC 7617 HTTP Basic authentication
+    conforms: true
+    evidence: >-
+      The v2 definitions declare `basicAuth` (type http, scheme basic) and the
+      Getting Started page documents
+      `Authorization: Basic base64(applicationId:applicationSecret)`.
+    scope: v2
+  - id: pagination
+    name: Cursor pagination
+    conforms: true
+    evidence: >-
+      v3 /positions declares a `cursor` parameter — "Opaque cursor from
+      meta.sampling.nextCursor" — and the Sampling schema returns `nextCursor`
+      when `limit` is reached. v2 /search uses `limit` + `offset` instead.
+    scope: v3
+    note: Two different pagination styles across the two versions; neither is documented in a shared conventions page.
+  - id: iso8601
+    name: ISO 8601 instants and durations
+    conforms: true
+    evidence: >-
+      v3 info.description — "Times are ISO 8601. Instants sent to the API may
+      carry any offset and are interpreted as the instant they name." The `step`
+      parameter takes an ISO 8601 duration (`PT1H`, `P1D`).
+    scope: v3
+  - id: semver
+    name: Semantic versioning of the service changelog
+    conforms: true
+    evidence: >-
+      https://docs.astronomyapi.com/changelog numbers 19 entries 1.0.0 → 3.0.0.
+    note: >-
+      Applied loosely — 2.3.0 appears twice with different dates and 2.3.1 is
+      dated before the second 2.3.0.
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: false
+    evidence: >-
+      No oauth2 or openIdConnect securityScheme in any definition; no
+      /.well-known/oauth-authorization-server on any host (see
+      well-known/astronomy-api-well-known.yml, all probes 403/404/soft-404).
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence: No /.well-known/openid-configuration served on any host probed 2026-09-04.
+  - id: idempotency
+    name: Idempotency keys on writes
+    conforms: false
+    evidence: >-
+      No Idempotency-Key header in any definition or docs page. The two POST
+      operations are image renders; the provider notes identical requests return
+      a cached URL, which is deterministic rendering, not replay protection.
+  - id: rate-limit-headers
+    name: RFC 9239 / draft RateLimit header fields
+    conforms: false
+    evidence: >-
+      429 is documented in prose but no RateLimit-*, X-RateLimit-* or
+      Retry-After header is documented or declared anywhere.
+  - id: json-api
+    name: 'JSON:API'
+    conforms: false
+    evidence: Responses are bespoke `data` envelopes; no JSON:API media type or structure.
+  - id: security-txt
+    name: RFC 9116 security.txt
+    conforms: false
+    evidence: Probed on 5 hosts 2026-09-04; not served (see well-known artifact).
+domain_standards:
+  checked: true
+  found: false
+  note: >-
+    REWARD-ONLY and honestly empty. Astronomy/ephemeris data has interchange
+    standards in the research-observatory world — the IVOA suite (VOTable,
+    SAMP, TAP/ADQL, VOEvent) and NASA/JPL SPICE kernels — but Astronomy API
+    declares none of them in its contract, publishes no VOTable or VOEvent
+    media type, and exposes no TAP or OAI-PMH surface. Its response shapes are
+    bespoke JSON. This is a commercial developer API rather than an
+    observatory data service, and its market has no widely-adopted contract
+    standard for a vendor of this shape, so nothing is asserted here.
+  probed:
+    - standard: IVOA VOTable / VOEvent media types
+      found: false
+      evidence: No `application/x-votable+xml` or VOEvent reference in any definition or docs page.
+    - standard: OGC API / OWS GetCapabilities
+      found: false
+      evidence: >-
+        Not probed by path pattern — no baseURL, docs link or prose on this
+        provider's surface names WMS/WFS/WCS/WMTS/CSW or "OGC API", so there is
+        no evidence to probe against.
+compliance:
+  published: false
+  evidence: >-
+    No trust centre, no certification page, no SOC 2 / ISO 27001 / HIPAA /
+    PCI claim anywhere on astronomyapi.com or docs.astronomyapi.com;
+    probe-security-programs.py returned vdp=none trust=none on 2026-09-04.
+    No Compliance pointer is emitted.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

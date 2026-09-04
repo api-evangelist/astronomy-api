@@ -1,0 +1,32 @@
+# AstronomyAPI
+
+## v2
+
+- [Getting Started](https://docs.astronomyapi.com/readme.md)
+- [Overview](https://docs.astronomyapi.com/api-v3-reference-draft/v3.md): What changed in v3, and why
+- [Positions](https://docs.astronomyapi.com/api-v3-reference-draft/v3/positions.md): Where the Sun, the Moon and the planets are
+- [Events](https://docs.astronomyapi.com/api-v3-reference-draft/v3/events.md): Eclipses and apsides for the observer's location
+- [Studio](https://docs.astronomyapi.com/api-v3-reference-draft/v3/studio.md): Rendered images of the sky
+- [Search](https://docs.astronomyapi.com/api-v3-reference-draft/v3/search.md): Find deep sky objects and stars
+- [Migrating from v2](https://docs.astronomyapi.com/api-v3-reference-draft/v3/migrating-from-v2.md): A field-by-field mapping from v2 to v3
+- [Bodies](https://docs.astronomyapi.com/endpoints/bodies.md): Get celestial body information for the given latitude, longitude and date/time.
+- [Positions](https://docs.astronomyapi.com/endpoints/bodies/positions.md): Celestial body positions API
+- [Events](https://docs.astronomyapi.com/endpoints/bodies/events.md): Get celestial events for a given body for the given date range.
+- [Studio](https://docs.astronomyapi.com/endpoints/studio.md): Astronomy API Studio enables you to generate images and charts based on data you provide.
+- [Star Chart](https://docs.astronomyapi.com/endpoints/studio/star-chart.md): Generates a star chart with the given parameters, and returns the url.
+- [Moon Phase](https://docs.astronomyapi.com/endpoints/studio/moon-phase.md): Generate an image of the Moon based on the given parameters.
+- [Search](https://docs.astronomyapi.com/endpoints/search.md): Search for stars and deep space objects.
+- [Requests and Responses](https://docs.astronomyapi.com/requests-and-response.md)
+- [Body Properties](https://docs.astronomyapi.com/requests-and-response/body-properties.md): Plants, Sun and Moon entities respond with common object properties. This page describes what to expect in the response.
+- [Event Properties](https://docs.astronomyapi.com/requests-and-response/event-properties.md)
+- [Search Result Properties](https://docs.astronomyapi.com/requests-and-response/body-properties-1.md): Search result items follows a common object schema. This page describes the different fields and what to expect as the values.
+- [Observer Parameters](https://docs.astronomyapi.com/requests-and-response/observer-parameters.md): When requesting for location and/or date-time related data, Observer parameters must be sent in the request.
+- [Tabular Responses](https://docs.astronomyapi.com/requests-and-response/tabular-responses.md): Some endpoints return data in tabular format for easy template rendering.
+- [Rows Responses](https://docs.astronomyapi.com/requests-and-response/tabular-responses-1.md): Some endpoints return data as rows for easy rendering data as a list.
+- [Error Responses](https://docs.astronomyapi.com/requests-and-response/error-responses.md): Common error responses.
+- [Constellation Enums](https://docs.astronomyapi.com/requests-and-response/constellation-enums.md)
+- [DSO Enums](https://docs.astronomyapi.com/requests-and-response/dso-enums.md)
+- [Page](https://docs.astronomyapi.com/page.md)
+- [Widgets](https://docs.astronomyapi.com/widgets.md): Embeddable scripts for your website
+- [Known Issues](https://docs.astronomyapi.com/known-issues.md): This section describes known issues with the system
+- [Changelog](https://docs.astronomyapi.com/changelog.md)

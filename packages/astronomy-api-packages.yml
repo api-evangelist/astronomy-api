@@ -1,0 +1,90 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  Searched npm (registry.npmjs.org search + package metadata), PyPI, the
+  AstronomyAPI GitHub organization (3 public repos), the widget CDN origin and
+  the documentation set (docs.astronomyapi.com/llms.txt, /widgets.md,
+  /readme.md). No first-party package is published to any language registry.
+provider: Astronomy API
+providerId: astronomy-api
+summary:
+  total: 3
+  official: 2
+  third_party: 1
+  registries_searched:
+    - npm
+    - PyPI
+    - CDN (widgets.astronomyapi.com)
+    - GitHub (AstronomyAPI org)
+  note: >-
+    Astronomy API distributes no first-party client library through a package
+    registry. Its only shipped client is a browser widget bundle served from its
+    own CDN at an UNPINNED URL, so a consumer cannot tell which build they are
+    loading and neither can we. Everything else the provider publishes is
+    example code, not a package. The one npm package that wraps the API is
+    third-party.
+packages:
+  - name: astronomyapi-widgets
+    official: true
+    language: JavaScript / TypeScript
+    registry: cdn
+    url: https://widgets.astronomyapi.com/cdn/astronomy-api-widgets.js
+    repository: https://github.com/AstronomyAPI/Widgets
+    license: MIT
+    version: null
+    published: null
+    note: >-
+      First-party (AstronomyAPI GitHub org, MIT). Distributed ONLY as an
+      unpinned script tag — `https://widgets.astronomyapi.com/cdn/astronomy-api-widgets.js`
+      carries no version segment and no registry entry exists (registry.npmjs.org
+      returns 404 for both `astronomyapi-widgets` and `astronomy-api-widgets`;
+      data.jsdelivr.com has no such package), so there is no metadata endpoint to
+      read a version or a release date from. The repository's package.json
+      declares `"version": "1.0.0"`, but that is the source tree, not the
+      artifact served. version: null is therefore a measured fact, not a gap:
+      the distribution floats to whatever is currently on the CDN.
+      Bundle fetched 2026-09-04: HTTP 200, application/javascript, 2,185 bytes,
+      defining `window.AstronomyAPI` with `moonPhase()` and `starChart()`.
+    installs:
+      - '<script src="https://widgets.astronomyapi.com/cdn/astronomy-api-widgets.js"></script>'
+    surface:
+      - moonPhase(options, callback)
+      - starChart(options, callback)
+  - name: AstronomyAPI/Samples
+    official: true
+    language: Vue / multiple
+    registry: none
+    url: https://github.com/AstronomyAPI/Samples
+    version: null
+    published: null
+    note: >-
+      First-party example repository, not a distributable package — no registry
+      entry, no release tags. Listed here because the provider's own docs point
+      developers at it for code samples and as the support/issue channel
+      ("Please create a ticket on Github"). Last pushed 2026-09-04.
+  - name: astronomyapi-client
+    official: false
+    language: JavaScript
+    registry: npm
+    url: https://www.npmjs.com/package/astronomyapi-client
+    version: 1.0.1
+    published: '2024-12-28'
+    note: >-
+      Third-party. Read from registry.npmjs.org: sole maintainer `csvensson`
+      (misuse-upshot.7y@icloud.com), no repository, no homepage, description "An
+      interface to astronomyapi.com". Not published by, endorsed by, or linked
+      from Astronomy API. Recorded so the absence of an official SDK is not
+      mistaken for the presence of one.
+absent:
+  - registry: PyPI
+    searched: astronomyapi
+    result: 404
+  - registry: npm
+    searched: astronomyapi-widgets
+    result: 404
+  - registry: npm
+    searched: astronomy-api-widgets
+    result: 404
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

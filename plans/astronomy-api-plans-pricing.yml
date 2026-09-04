@@ -4,148 +4,74 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Astronomy API
 providerId: astronomy-api
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+modified: '2026-09-04'
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://astronomyapi.com/ (homepage copy, read from the compiled Angular
+  bundle main-7RL7YQZX.js) and https://docs.astronomyapi.com/ (Getting Started,
+  Known Issues). Probed https://astronomyapi.com/pricing on 2026-09-04.
+plan_count: 0
 tags:
   - Astronomy
   - Celestial Data
   - Space
   - Moon Phases
   - Star Charts
-description: Machine-readable plans and pricing scaffold for this API provider. Conforms to the API Commons
-  Plans schema. Tier limits and prices are scaffold defaults; replace with provider-published values.
-plans:
-  - id: astronomy-api-free
-    name: Free
-    type: freemium
-    description: Free entry tier for the Astronomy API API surface. Intended for evaluation, prototyping,
-      and low-volume integrations. Real limits and pricing must be reconciled with the provider's published
-      plan documentation.
-    entries:
-      - label: API Requests
-        description: Monthly API request quota across all included endpoints
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: 1000
-        timeFrame: month
-        geo: global
-        domains:
-          - https://api.astronomyapi.com/api/v2
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the free tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 10
-        timeFrame: minute
-        geo: global
-        domains:
-          - https://api.astronomyapi.com/api/v2
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-    elements:
-      - name: Public Documentation
-      - name: Community Support
-      - name: Sandbox Access
-      - name: Astronomy API
-  - id: astronomy-api-pro
-    name: Professional
-    type: paid
-    description: Production tier for Astronomy API. Provides higher quotas, priority support, and access
-      to the broader API portfolio. Pricing placeholder; align with the provider's pricing page.
-    entries:
-      - label: API Requests
-        description: Monthly API request quota
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: 100000
-        timeFrame: month
-        geo: global
-        domains:
-          - https://api.astronomyapi.com/api/v2
-        unit: 1
-        price: TBD
-        userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the professional tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 100
-        timeFrame: minute
-        geo: global
-        domains:
-          - https://api.astronomyapi.com/api/v2
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Overage
-        description: Per-request price after monthly quota is exceeded
-        name: overage
-        type: metered
-        metric: requests
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://api.astronomyapi.com/api/v2
-        unit: 1000
-        price: TBD
-        userMultiplied: false
-    elements:
-      - name: All Production Endpoints
-      - name: Email Support
-      - name: SLA Targets
-      - name: Webhook Subscriptions
-      - name: Astronomy API
-  - id: astronomy-api-enterprise
-    name: Enterprise
-    type: enterprise
-    description: Custom-negotiated tier for Astronomy API. Includes dedicated capacity, contractual SLAs,
-      security review, data residency options, and named technical account management.
-    entries:
-      - label: API Requests
-        description: Negotiated request volume; -1 indicates uncapped subject to fair use
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: -1
-        timeFrame: month
-        geo: configurable
-        domains:
-          - https://api.astronomyapi.com/api/v2
-        unit: 1
-        price: custom
-        userMultiplied: false
-      - label: Rate Limit
-        description: Negotiated burst and steady-state rate
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 1000
-        timeFrame: minute
-        geo: configurable
-        domains:
-          - https://api.astronomyapi.com/api/v2
-        unit: 1
-        price: custom
-        userMultiplied: false
-    elements:
-      - name: Unlimited / Negotiated Volume
-      - name: 24/7 Dedicated Support
-      - name: Contractual SLA
-      - name: Security & Compliance Review
-      - name: Dedicated Account Manager
-      - name: Custom Data Residency
-      - name: Astronomy API
+description: >-
+  Astronomy API PUBLISHES NO PLANS. There is no pricing page and no price of any
+  kind on the public site: sign-up is free and self-serve, and the only stated
+  path to more capacity is an email.
+findings:
+  no_pricing_page:
+    probed_url: https://astronomyapi.com/pricing
+    http_status: 200
+    verdict: soft-404
+    evidence: >-
+      The 200 is the Angular SPA's 13,109-byte catch-all shell. The application's
+      compiled route table contains exactly: "", "/", auth/sign-in, auth/signup,
+      auth/logout, auth/password-reset, dashboard, dashboard/applications/new,
+      privacy-policy, terms-of-service. There is no `pricing` route and no
+      lazy-loaded chunk carrying one, so the page does not exist — the apis.yml
+      pointer that claimed it has been removed.
+  paid_tiers_are_email_only:
+    quote: >-
+      "Custom endpoints and high API request rates are available on paid plans.
+      Send an email to contact@astronomyapi.com"
+    source: https://astronomyapi.com/
+    meaning: >-
+      Paid capacity exists but is negotiated by mail. No tier names, no quotas,
+      no prices, no currency, no billing period are published anywhere on the
+      provider's surface.
+  free_access:
+    quote: >-
+      "Go to the Signup page to create your free account." — after which the
+      developer creates an Application and receives an Application ID and
+      Application Secret.
+    source: https://docs.astronomyapi.com/
+    meaning: >-
+      Self-serve free access with no card and no stated included quota. The
+      limit that actually applies is an undocumented IP- and
+      consumption-based throttle; see rate-limits/astronomy-api-rate-limits.yml.
+  funding_appeal:
+    quote: >-
+      "Help Us Keep the Stars Within Reach: Support AstronomyAPI ... High traffic
+      and usage have led to service outages, straining our resources ... We've
+      started a fundraiser so you can help us to keep the service alive."
+    source: https://astronomyapi.com/
+    meaning: >-
+      The provider's headline call to action is a donation appeal, not a
+      subscription. Recorded because it is the clearest public statement of this
+      API's commercial model: a free service funded by contributions with
+      bespoke paid arrangements on request.
+plans: []
+note: >-
+  This file previously carried a three-tier Free/Professional/Enterprise
+  scaffold with invented quotas (1,000 and 100,000 requests/month), invented
+  rate limits and `price: TBD`, written by the 2026-05-04 bulk sweep and marked
+  `method: generated`. None of it came from Astronomy API. It has been replaced
+  with the measured result — zero published plans — because an honest zero is
+  data and a plausible invented tier is not.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

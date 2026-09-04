@@ -7,7 +7,10 @@ artifacts:
     method: generated
     evidence: declared in the artifact
   authentication/astronomy-api-authentication.yml:
-    method: derived
+    method: searched
+    evidence: declared in the artifact
+  changelog/astronomy-api-changelog.yml:
+    method: searched
     evidence: declared in the artifact
   collections/astronomy-api-bodies-api.opencollection.json:
     method: derived
@@ -39,70 +42,25 @@ artifacts:
   collections/astronomy-api.postman_collection.json:
     method: derived
     evidence: openapi/astronomy-api
+  components/astronomy-api-components.yml:
+    method: searched
+    evidence: declared in the artifact
+  conformance/astronomy-api-conformance.yml:
+    method: derived
+    evidence: declared in the artifact
+  conventions/astronomy-api-conventions.yml:
+    method: searched
+    evidence: declared in the artifact
+  data-model/astronomy-api-data-model.yml:
+    method: derived
+    evidence: declared in the artifact
+  errors/astronomy-api-problem-types.yml:
+    method: searched
+    evidence: declared in the artifact
   finops/astronomy-api-finops.yml:
     method: generated
     evidence: declared in the artifact
-  kin/checks-2026-08-28T221322.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-23T094130.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-23T182523.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-26T223651.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-27T083119.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-27T190208.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T115055.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T170848.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T172558.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T192327.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-28T200725.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-31T133250.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-31T151044.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-31T162206.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-07-31T202106.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-01T163141.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-01T163302.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-01T171935.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-03T113057.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-03T161012.yml:
-    method: generated
-    evidence: Kin Score snapshot written by score.rb
-  kin/score-2026-08-04T083143.yml:
+  kin/checks-2026-09-04T062714.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-08-05T153418.yml:
@@ -189,9 +147,63 @@ artifacts:
   kin/score-2026-08-28T221322.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-08-29T213958.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-08-29T230545.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-08-30T203505.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-08-30T220315.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-08-31T223420.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-01T063623.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-01T210448.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-01T222808.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-02T211804.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-02T224043.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-03T161828.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-03T174231.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-09-04T062714.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  lifecycle/astronomy-api-lifecycle.yml:
+    method: searched
+    evidence: declared in the artifact
+  llms/astronomy-api-llms-full.txt:
+    method: searched
+    evidence: 'derive-llms-provenance.py: harvested'
   llms/astronomy-api-llms-probe.yml:
     method: searched
     evidence: 'derive-llms-provenance.py: harvested'
+  llms/astronomy-api-llms.txt:
+    method: searched
+    evidence: 'derive-llms-provenance.py: harvested'
+  mcp/astronomy-api-mcp.yml:
+    method: derived
+    evidence: declared in the artifact
+  mcp/astronomy-api-tool-crosswalk.yml:
+    method: derived
+    evidence: declared in the artifact
   openapi/astronomy-api-bodies-api-openapi.yml:
     method: unknown
     evidence: no authorship recorded
@@ -204,12 +216,51 @@ artifacts:
   openapi/astronomy-api-studio-api-openapi.yml:
     method: unknown
     evidence: no authorship recorded
-  plans/astronomy-api-plans-pricing.yml:
+  openapi/astronomy-api-v3-openapi.yaml:
+    method: unknown
+    evidence: no authorship recorded
+  overlays/astronomy-api-bodies-api-overlay.yaml:
     method: generated
+    evidence: declared in the artifact
+  overlays/astronomy-api-events-api-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/astronomy-api-search-api-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/astronomy-api-studio-api-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  overlays/astronomy-api-v3-overlay.yaml:
+    method: generated
+    evidence: declared in the artifact
+  packages/astronomy-api-packages.yml:
+    method: searched
+    evidence: declared in the artifact
+  plans/astronomy-api-plans-pricing.yml:
+    method: searched
     evidence: declared in the artifact
   rate-limits/astronomy-api-rate-limits.yml:
-    method: generated
+    method: searched
     evidence: declared in the artifact
   security/astronomy-api-domain-security.yml:
+    method: unknown
+    evidence: no authorship recorded
+  skills/_index.yml:
+    method: generated
+    evidence: declared in the artifact
+  skills/astronomy-api-deep-sky-search.md:
+    method: generated
+    evidence: declared in the artifact
+  skills/astronomy-api-moon-phase-image.md:
+    method: generated
+    evidence: declared in the artifact
+  skills/astronomy-api-observation-planning.md:
+    method: generated
+    evidence: declared in the artifact
+  skills/astronomy-api-star-chart-image.md:
+    method: generated
+    evidence: declared in the artifact
+  well-known/astronomy-api-well-known.yml:
     method: unknown
     evidence: no authorship recorded

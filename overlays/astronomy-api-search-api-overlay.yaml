@@ -1,0 +1,49 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Astronomy API search-api
+  version: 1.0.0
+  x-generated: '2026-09-04'
+  x-method: generated
+  x-source: API Evangelist enrichment pipeline — records this repo's own derived and searched artifacts
+    against the provider's unmodified specification.
+  x-note: 'Adds only API Evangelist annotations: cross-references to the artifacts in this repo, the runtime
+    conditions the provider documents in prose but never declares in the contract (429, 504, 403-on-auth-failure),
+    and the derived x-agentic-access classification from agentic-access/astronomy-api-agentic-access.yml.
+    The provider''s specification is never mutated.'
+extends: ./astronomy-api-search-api-openapi.yml
+actions:
+- target: $.info
+  description: Attach API Evangelist artifact cross-references and provenance.
+  update:
+    x-apis-io:
+      provider: astronomy-api
+      record: https://apis.io/astronomy-api/
+      artifacts:
+        conventions: conventions/astronomy-api-conventions.yml
+        errors: errors/astronomy-api-problem-types.yml
+        lifecycle: lifecycle/astronomy-api-lifecycle.yml
+        rateLimits: rate-limits/astronomy-api-rate-limits.yml
+        authentication: authentication/astronomy-api-authentication.yml
+        dataModel: data-model/astronomy-api-data-model.yml
+        conformance: conformance/astronomy-api-conformance.yml
+        plans: plans/astronomy-api-plans-pricing.yml
+        toolCrosswalk: mcp/astronomy-api-tool-crosswalk.yml
+    x-runtime-notes:
+      rate-limit: HTTP 429 is enforced on IP and overall consumption. No RateLimit-* or Retry-After header
+        is served; the provider says only to retry "after some time". See rate-limits/astronomy-api-rate-limits.yml.
+      timeout: HTTP 504 is a documented condition on the studio endpoints and the provider states an identical
+        retry succeeds.
+      auth-failure-status: v2 answers a bad credential with 403, not 401.
+      error-shape: v2 returns raw JSON-Schema validator output under `errors[]` with no stable code. See
+        errors/astronomy-api-problem-types.yml.
+      source: https://docs.astronomyapi.com/known-issues and https://docs.astronomyapi.com/requests-and-response/error-responses
+- target: $.paths['/search'].get
+  description: Attach the derived agentic-access execution class for this operation.
+  update:
+    x-agentic-access:
+      action-class: connected
+      consequence: read
+      subject: optional
+      token:
+        max-ttl: 3600
+      audit: none

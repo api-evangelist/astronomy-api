@@ -1,20 +1,41 @@
-# Negative probe result — recorded deliberately.
+# Probe record for llms.txt across every host this record knows.
 #
-# roadmap#27: `llms_txt_published` credited a DECLARED pointer wherever no llms/
-# artifact existed. This file IS that artifact. It makes repo_has?(slug,'llms')
-# true so the unprobed-pointer fallback stops firing, while carrying no .txt so
-# llms_txt_present? stays false. The check therefore returns a TRUE zero, backed
-# by a fetched URL and a status code, instead of a false credit.
-#
-# Same posture as the well-known probe artifacts: a recorded absence is a valid
-# measurement. Do not delete this to 'clean up' — deleting it restores the bug.
+# Round 1 (2026-08-17) probed only astronomyapi.com and recorded a soft-404.
+# Round 2 (2026-09-04) probed the DOCUMENTATION host and found a real, served
+# llms.txt — the marketing domain never had one, the docs domain always did.
+# Both results are kept: the negative is why the apis.yml pointer was wrong,
+# and the positive is what replaced it.
 llms:
-  probed: '2026-08-17'
-  url: https://astronomyapi.com/llms.txt
-  verdict: soft-404
-  published: false
+  probed: '2026-09-04'
+  published: true
+  url: https://docs.astronomyapi.com/llms.txt
   http_status: 200
-  content_type: text/html
-  bytes: 13109
+  content_type: text/markdown; charset=utf-8
+  bytes: 3507
+  saved: llms/astronomy-api-llms.txt
+  verdict: published
   note: >-
-    HTTP 200 serving HTML, not a text llms.txt. A 200 is not evidence.
+    GitBook-generated index of the whole documentation set — 29 links, each with
+    a one-line description, covering v2 endpoints, the v3 reference draft,
+    request/response conventions, widgets, known issues and the changelog.
+  companion:
+    url: https://docs.astronomyapi.com/llms-full.txt
+    http_status: 200
+    content_type: text/markdown; charset=utf-8
+    bytes: 207766
+    committed: false
+    note: >-
+      Fetched and used as a source for the changelog, error, conventions,
+      components and rate-limit artifacts in this repo. NOT committed —
+      `*-llms-full.txt` is gitignored per the enrichment contract.
+  previous_probes:
+    - probed: '2026-08-17'
+      url: https://astronomyapi.com/llms.txt
+      http_status: 200
+      content_type: text/html
+      bytes: 13109
+      verdict: soft-404
+      note: >-
+        Angular SPA catch-all. A 200 here is the app shell, not a document. The
+        apis.yml LlmsText pointer aimed at this URL until 2026-09-04 and has
+        been repointed at the docs host.

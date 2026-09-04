@@ -1,0 +1,34 @@
+generated: '2026-09-04'
+method: generated
+source: >-
+  Grounded in openapi/astronomy-api-v3-openapi.yaml (which declares
+  operationIds) and the four v2 definitions in openapi/ (which do not — the v2
+  operations are named by method and path throughout). Searched
+  docs.astronomyapi.com for provider-published skills or an AGENTS.md first;
+  none exists.
+provider: Astronomy API
+providerId: astronomy-api
+note: >-
+  Every skill states which version it is calling. /api/v2 is production;
+  /api/v3 is a published reference draft that has not shipped, so a skill that
+  assumed v3 would not work today.
+skills:
+  - name: astronomy-api-observation-planning
+    file: skills/astronomy-api-observation-planning.md
+    description: Positions of the bodies over a date range, plus the events that fall inside it.
+    operations: [getPositions, getEvents, 'GET /bodies/positions', 'GET /bodies/positions/{body}', 'GET /bodies/events/{body}']
+  - name: astronomy-api-moon-phase-image
+    file: skills/astronomy-api-moon-phase-image.md
+    description: Render a moon phase image, with the hemisphere-correct orientation.
+    operations: [createMoonPhase, 'POST /studio/moon-phase']
+  - name: astronomy-api-star-chart-image
+    file: skills/astronomy-api-star-chart-image.md
+    description: Render a star chart framed on a constellation or on a sky position.
+    operations: [createStarChart, 'POST /studio/star-chart']
+  - name: astronomy-api-deep-sky-search
+    file: skills/astronomy-api-deep-sky-search.md
+    description: Resolve a star or deep sky object by name or position, and page the results.
+    operations: [search, 'GET /search']
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

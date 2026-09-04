@@ -1,0 +1,73 @@
+generated: '2026-09-04'
+method: searched
+source: https://docs.astronomyapi.com/widgets.md
+provider: Astronomy API
+providerId: astronomy-api
+description: >-
+  Astronomy API ships a first-party browser widget library — embeddable
+  client-side surfaces that render the two Studio image endpoints into a page
+  without the developer writing a request. This is distinct from an SDK: the
+  widgets own the DOM element and the render, not just the HTTP call.
+loader:
+  type: script-tag
+  url: https://widgets.astronomyapi.com/cdn/astronomy-api-widgets.js
+  global: AstronomyAPI
+  init: 'new AstronomyAPI({ basicToken: "<base64(applicationId:applicationSecret)>" })'
+  auth_note: >-
+    The widget takes the SAME base64 Basic credential the REST API uses, minus
+    the literal word "Basic", embedded in page JavaScript. The provider's own
+    Getting Started page tells browser callers to set the application's `Origin`
+    to their site's domain so the API returns a matching
+    Access-Control-Allow-Origin header.
+  probed:
+    url: https://widgets.astronomyapi.com/cdn/astronomy-api-widgets.js
+    http_status: 200
+    content_type: application/javascript
+    bytes: 2185
+    fetched: '2026-09-04'
+families:
+  - name: Studio Widgets
+    description: Embeddable renderers for the two Studio image endpoints.
+    repository: https://github.com/AstronomyAPI/Widgets
+    license: MIT
+    examples: https://github.com/AstronomyAPI/Widgets/tree/main/examples
+    components:
+      - name: Moon Phase
+        method: client.moonPhase(options, callback)
+        default_element: '#moon-phase'
+        backs: POST /studio/moon-phase
+        options:
+          - element
+          - format
+          - style.moonStyle
+          - style.backgroundStyle
+          - style.backgroundColor
+          - style.headingColor
+          - style.textColor
+          - observer.latitude
+          - observer.longitude
+          - observer.date
+          - view.type
+        note: >-
+          A <div> with the default id `moon-phase` is required unless a custom
+          `element` selector is passed. The callback receives the raw API
+          response.
+      - name: Star Chart
+        method: client.starChart(options, callback)
+        default_element: '#star-chart'
+        backs: POST /studio/star-chart
+        options:
+          - element
+          - style
+          - observer.latitude
+          - observer.longitude
+          - observer.date
+          - view.type
+          - view.parameters.constellation
+        note: >-
+          Same contract as the star-chart endpoint; the widget sets the
+          container to 800x617 and replaces its children with the returned
+          image.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

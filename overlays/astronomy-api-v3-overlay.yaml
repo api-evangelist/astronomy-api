@@ -1,0 +1,95 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Astronomy API v3
+  version: 1.0.0
+  x-generated: '2026-09-04'
+  x-method: generated
+  x-source: API Evangelist enrichment pipeline — records this repo's own derived and searched artifacts
+    against the provider's unmodified specification.
+  x-note: 'Adds only API Evangelist annotations to the provider''s own v3 definition: artifact cross-references,
+    the draft status of the contract, the undeclared 429 behaviour, and a per-operation agentic-access
+    classification. The harvested specification is never mutated.'
+extends: ./astronomy-api-v3-openapi.yaml
+actions:
+- target: $.info
+  description: Attach API Evangelist artifact cross-references and provenance.
+  update:
+    x-apis-io:
+      provider: astronomy-api
+      record: https://apis.io/astronomy-api/
+      artifacts:
+        conventions: conventions/astronomy-api-conventions.yml
+        errors: errors/astronomy-api-problem-types.yml
+        lifecycle: lifecycle/astronomy-api-lifecycle.yml
+        rateLimits: rate-limits/astronomy-api-rate-limits.yml
+        authentication: authentication/astronomy-api-authentication.yml
+        dataModel: data-model/astronomy-api-data-model.yml
+        conformance: conformance/astronomy-api-conformance.yml
+        plans: plans/astronomy-api-plans-pricing.yml
+        toolCrosswalk: mcp/astronomy-api-tool-crosswalk.yml
+    x-lifecycle:
+      status: reference draft
+      evidence: https://docs.astronomyapi.com/api-v3-reference-draft/v3 — "v3 is being built. These pages
+        are published as each endpoint is settled, so that the design can be read and argued with before
+        it ships."
+      production-surface: https://api.astronomyapi.com/api/v2
+      migration-guide: https://docs.astronomyapi.com/api-v3-reference-draft/v3/migrating-from-v2
+    x-runtime-notes:
+      rate-limit: Rate limiting is enforced service-wide on IP and overall consumption and returns 429,
+        but no 429 response and no RateLimit-* header is declared in this specification. See rate-limits/astronomy-api-rate-limits.yml.
+      errors: Declared error responses use RFC 9457 application/problem+json. The registry of `type` URIs
+        is not published; only https://astronomyapi.com/problems/invalid-parameter is named. See errors/astronomy-api-problem-types.yml.
+- target: $.paths['/positions'].get
+  description: Attach API Evangelist runtime annotations for getPositions.
+  update:
+    x-agentic-access:
+      action-class: connected
+      consequence: read
+      subject: optional
+      reversibility: not-applicable
+      audit: none
+    x-runtime-note: 'Cursor pagination: when `limit` is reached, meta.sampling.nextCursor carries the
+      continuation. `earth` is rejected with 422 by design.'
+- target: $.paths['/events'].get
+  description: Attach API Evangelist runtime annotations for getEvents.
+  update:
+    x-agentic-access:
+      action-class: connected
+      consequence: read
+      subject: optional
+      reversibility: not-applicable
+      audit: none
+    x-runtime-note: 'Returns two polymorphic event shapes discriminated by `type`: lunar_eclipse/solar_eclipse
+      carry `contacts`, apsis carries `distance` and no contacts.'
+- target: $.paths['/search'].get
+  description: Attach API Evangelist runtime annotations for search.
+  update:
+    x-agentic-access:
+      action-class: connected
+      consequence: read
+      subject: optional
+      reversibility: not-applicable
+      audit: none
+    x-runtime-note: '`term` and the rightAscension/declination pair are mutually exclusive.'
+- target: $.paths['/studio/star-chart'].post
+  description: Attach API Evangelist runtime annotations for createStarChart.
+  update:
+    x-agentic-access:
+      action-class: acting
+      consequence: render
+      subject: optional
+      reversibility: not-applicable
+      audit: none
+    x-runtime-note: 'Pure render: returns an image URL and creates no caller-owned resource. Identical
+      requests return the same cached URL, so a retry is safe; no reversal operation exists or is needed.'
+- target: $.paths['/studio/moon-phase'].post
+  description: Attach API Evangelist runtime annotations for createMoonPhase.
+  update:
+    x-agentic-access:
+      action-class: acting
+      consequence: render
+      subject: optional
+      reversibility: not-applicable
+      audit: none
+    x-runtime-note: 'Pure render: returns an image URL and creates no caller-owned resource. Identical
+      requests return the same cached URL, so a retry is safe; no reversal operation exists or is needed.'

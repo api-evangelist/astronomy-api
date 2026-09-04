@@ -1,16 +1,99 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/astronomy-api-openapi.yml
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://docs.astronomyapi.com/ (Getting Started — "Obtaining an Application ID
+  and a Secret" and "Basic Authentication"), openapi/astronomy-api-v3-openapi.yaml
+  (components.securitySchemes.applicationKey) and the four v2 definitions in
+  openapi/ (basicAuth). Baseline derived by
+  0-working/derive-authentication.py, then upgraded from the provider's docs.
 summary:
   types:
-  - http
+    - http
+  oauth2: false
+  openid_connect: false
+  mtls: false
+  api_key_header: false
+  note: >-
+    Two schemes for two versions. Production v2 is HTTP Basic; the published v3
+    draft moves to HTTP Bearer. There is no OAuth of any kind — no
+    /.well-known/openid-configuration or /.well-known/oauth-authorization-server
+    is served on any host (see well-known/astronomy-api-well-known.yml), so no
+    scopes artifact is emitted.
 schemes:
-- name: basicAuth
-  type: http
-  scheme: basic
-  description: |-
-    HTTP Basic auth: username is the Application ID and password is the
-    Application Secret. The client typically sends
-    `Authorization: Basic base64(applicationId:applicationSecret)`.
-  sources:
-  - openapi/astronomy-api-openapi.yml
+  - name: basicAuth
+    type: http
+    scheme: basic
+    version: v2
+    status: production
+    description: |-
+      HTTP Basic auth: username is the Application ID and password is the
+      Application Secret. The client sends
+      `Authorization: Basic base64(applicationId:applicationSecret)`.
+    docs: https://docs.astronomyapi.com/
+    failure_status: 403
+    failure_note: >-
+      The docs are explicit that a v2 authentication failure returns 403
+      Forbidden, not 401 — "which probably means you encrypted the string
+      incorrectly, or your credentials are wrong."
+    sources:
+      - openapi/astronomy-api-bodies-api-openapi.yml
+      - openapi/astronomy-api-events-api-openapi.yml
+      - openapi/astronomy-api-search-api-openapi.yml
+      - openapi/astronomy-api-studio-api-openapi.yml
+      - https://docs.astronomyapi.com/
+  - name: applicationKey
+    type: http
+    scheme: bearer
+    version: v3
+    status: reference draft
+    description: |-
+      The application key, sent as `Authorization: Bearer <key>`. Keys are
+      never accepted in the query string, where they would be recorded in
+      logs and browser history.
+    failure_status: 401
+    sources:
+      - openapi/astronomy-api-v3-openapi.yaml
+credential_lifecycle:
+  issuance: >-
+    Self-serve. Create a free account at https://astronomyapi.com/auth/signup,
+    then "Create Application" in the dashboard to receive an Application ID and
+    an Application Secret.
+  secret_visibility: once
+  secret_visibility_quote: >-
+    "The Application Secret is visible to you only once during application
+    creation. Save it somewhere because there's no way to retrieve it back. If
+    you lost your secret create a new application and delete the old
+    application."
+  rotation:
+    supported: false
+    note: >-
+      There is no rotation flow. Rotating a credential means creating a new
+      application and deleting the old one — and the docs warn "once an
+      application is deleted there's no way to recover it," so the two cannot
+      overlap safely without a deliberate cut-over.
+  expiry: none documented
+  revocation: Delete the application in the dashboard.
+  scoping:
+    dimension: origin
+    note: >-
+      An application carries an `Origin` value which the API echoes as the
+      Access-Control-Allow-Origin header. This is the only scoping mechanism —
+      there are no permissions, roles or scopes of any kind. Every credential
+      can call every operation.
+browser_exposure:
+  note: >-
+    The first-party widget library takes the same base64 Basic credential
+    embedded in page JavaScript, so a browser integration necessarily exposes
+    the application secret to anyone who reads the page. Setting the
+    application's Origin is the only mitigation the provider offers. See
+    components/astronomy-api-components.yml.
+marketplace:
+  rapidapi:
+    note: >-
+      RapidAPI callers may share a pooled key and be throttled as one consumer;
+      the docs advise getting a first-party key from the Astronomy API console
+      instead.
+    source: https://docs.astronomyapi.com/known-issues
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

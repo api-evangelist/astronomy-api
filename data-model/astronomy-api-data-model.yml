@@ -1,0 +1,232 @@
+generated: '2026-09-04'
+method: derived
+source: >-
+  openapi/astronomy-api-v3-openapi.yaml (27 component schemas, $ref graph),
+  cross-read against the v2 object reference at
+  https://docs.astronomyapi.com/requests-and-response/body-properties,
+  .../event-properties and .../body-properties-1.
+provider: Astronomy API
+providerId: astronomy-api
+description: >-
+  The entity graph of the Astronomy API, derived from the v3 contract because it
+  is the only version with declared schemas — the four v2 definitions in
+  openapi/ describe operations but no response bodies. This is a REFERENCE data
+  model, not a record store: nothing here is created, owned or mutated by the
+  caller. Every entity is a computed observation of the sky from a point on the
+  Earth at an instant, so the graph has no identity or ownership edges, only
+  composition and enumeration edges.
+identity:
+  caller_owned_entities: none
+  id_prefixes: none
+  note: >-
+    The only identifiers are catalogue and body identifiers the provider does
+    not mint per caller — body ids (`sun`, `moon`, `mars`), IAU constellation
+    abbreviations, and deep-sky catalogue designations. The one caller-scoped
+    identifier in the product, the Application ID, belongs to the dashboard and
+    appears in no API response.
+entities:
+  - name: Observer
+    kind: value-object
+    description: A point on the Earth. Latitude, longitude and optional elevation.
+    fields: [latitude, longitude, elevation]
+    note: The pivot of the whole model — nearly every value is relative to it.
+  - name: Meta
+    kind: envelope
+    description: Per-response context — the observer echoed back, the timezone, the declared units, the reference frames, and the sampling window.
+    fields: [observer, timezone, units, frames, sampling]
+  - name: Sampling
+    kind: value-object
+    description: The time window and step of a positions request, with the continuation cursor.
+    fields: [from, to, step, count, nextCursor]
+  - name: BodyIdentity
+    kind: entity
+    description: A celestial body — the fixed set of ten (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto).
+    fields: [id, name]
+    id_field: id
+    enumerated: true
+    note: v3 carries the list in the specification as the BodyId enum rather than serving it; v2's GET /bodies is removed.
+  - name: BodySamples
+    kind: aggregate
+    description: One body plus every sample taken for it across the requested window.
+    fields: [body, samples]
+  - name: Sample
+    kind: entity
+    description: Where one body was, as seen from the observer, at one instant.
+    fields: [time, rightAscension, declination, altitude, azimuth, distance, constellation, elongation, magnitude, phase, formatted]
+  - name: Distance
+    kind: value-object
+    fields: [au, km]
+  - name: Constellation
+    kind: value-object
+    fields: [abbreviation, name]
+    note: v2's lowercase `constellation.id` duplicate is removed in v3.
+  - name: Phase
+    kind: value-object
+    fields: [angle, fraction, name]
+    note: >-
+      `angle` corrects v2's misspelled `angel`; `fraction` is corrected in value
+      as well as name (see lifecycle/astronomy-api-lifecycle.yml).
+  - name: Formatted
+    kind: value-object
+    description: Sexagesimal display strings, present only when include=formatted.
+    fields: [rightAscension, declination, altitude, azimuth]
+  - name: Event
+    kind: polymorphic
+    description: An occurrence at the observer's location, discriminated by `type`.
+    variants: [EclipseEvent, ApsisEvent]
+  - name: EclipseEvent
+    kind: entity
+    fields: [type, kind, time, altitude, contacts, obscuration, rise, set]
+    types: [lunar_eclipse, solar_eclipse]
+  - name: ApsisEvent
+    kind: entity
+    fields: [type, kind, time, altitude, distance]
+    types: [apsis]
+    note: New in v3; v2 had no notion of apsides.
+  - name: Contacts
+    kind: value-object
+    description: The six contact moments of an eclipse.
+    fields: [penumbralStart, partialStart, totalStart, totalEnd, partialEnd, penumbralEnd]
+  - name: Contact
+    kind: value-object
+    fields: [time, altitude]
+  - name: CatalogueObject
+    kind: entity
+    description: A star or deep sky object in the searchable catalogue.
+    fields: [id, name, type, subType, crossIdentification, rightAscension, declination, formatted]
+    id_field: id
+  - name: NamedType
+    kind: value-object
+    description: The type/subType pair of a catalogue object.
+    fields: [id, name]
+  - name: StudioRequest
+    kind: request
+    fields: [observer, time, format]
+  - name: StarChartRequest
+    kind: request
+    composes: [StudioRequest, AreaView, ConstellationView]
+  - name: MoonPhaseRequest
+    kind: request
+    composes: [StudioRequest]
+  - name: AreaView
+    kind: value-object
+    description: Frames a chart on a sky position plus a zoom level.
+    fields: [type, parameters]
+  - name: ConstellationView
+    kind: value-object
+    description: Frames a chart on a named constellation.
+    fields: [type, parameters]
+  - name: ImageResult
+    kind: response
+    fields: [data]
+    note: '{ "data": { "imageUrl": "..." } } — the only thing a Studio POST returns.'
+  - name: Problem
+    kind: error
+    fields: [type, title, status, detail, errors]
+    note: RFC 9457. See errors/astronomy-api-problem-types.yml.
+relationships:
+  - from: PositionsResponse
+    to: Meta
+    type: has_one
+    via: meta
+  - from: PositionsResponse
+    to: BodySamples
+    type: has_many
+    via: data
+  - from: Meta
+    to: Observer
+    type: has_one
+    via: observer
+  - from: Meta
+    to: Sampling
+    type: has_one
+    via: sampling
+  - from: BodySamples
+    to: BodyIdentity
+    type: has_one
+    via: body
+  - from: BodySamples
+    to: Sample
+    type: has_many
+    via: samples
+  - from: Sample
+    to: Distance
+    type: has_one
+    via: distance
+  - from: Sample
+    to: Constellation
+    type: has_one
+    via: constellation
+  - from: Sample
+    to: Phase
+    type: has_one
+    via: phase
+  - from: Sample
+    to: Formatted
+    type: has_one
+    via: formatted
+    conditional: include=formatted
+  - from: BodyIdentity
+    to: BodyId
+    type: belongs_to
+    via: id
+    note: BodyId is an enumeration, not a fetchable resource.
+  - from: EventsResponse
+    to: Observer
+    type: has_one
+    via: meta.observer
+  - from: EventsResponse
+    to: BodyIdentity
+    type: has_many
+    via: data[].body
+  - from: EventsResponse
+    to: Event
+    type: has_many
+    via: data[].events
+  - from: EclipseEvent
+    to: Contacts
+    type: has_one
+    via: contacts
+  - from: Contacts
+    to: Contact
+    type: has_many
+    via: 'penumbralStart, partialStart, totalStart, totalEnd, partialEnd, penumbralEnd'
+  - from: ApsisEvent
+    to: Distance
+    type: has_one
+    via: distance
+  - from: SearchResponse
+    to: CatalogueObject
+    type: has_many
+    via: data
+  - from: CatalogueObject
+    to: NamedType
+    type: has_one
+    via: type
+  - from: StarChartRequest
+    to: StudioRequest
+    type: composes
+    via: allOf
+  - from: StarChartRequest
+    to: AreaView
+    type: has_one
+    via: view (oneOf with ConstellationView)
+  - from: StarChartRequest
+    to: ConstellationView
+    type: has_one
+    via: view (oneOf with AreaView)
+  - from: MoonPhaseRequest
+    to: StudioRequest
+    type: composes
+    via: allOf
+  - from: StudioRequest
+    to: Observer
+    type: has_one
+    via: observer
+summary:
+  entities: 26
+  relationships: 24
+  caller_mutable_entities: 0
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

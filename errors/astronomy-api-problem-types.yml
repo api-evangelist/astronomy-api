@@ -1,0 +1,147 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://docs.astronomyapi.com/requests-and-response/error-responses,
+  https://docs.astronomyapi.com/known-issues,
+  https://docs.astronomyapi.com/api-v3-reference-draft/v3/migrating-from-v2,
+  openapi/astronomy-api-v3-openapi.yaml (components.schemas.Problem and
+  components.responses), and the v2 OpenAPI definitions in openapi/.
+provider: Astronomy API
+providerId: astronomy-api
+description: >-
+  Astronomy API runs TWO error contracts side by side. v2 (production) returns a
+  raw JSON-Schema validator dump under an `errors` array with no stable code.
+  v3 (published as a reference draft) returns RFC 9457 problem details as
+  application/problem+json with a stable `type` URI and a machine-readable code
+  per parameter. They are catalogued separately because a client cannot treat
+  them as one shape.
+contracts:
+  - version: v2
+    status: production
+    format: custom
+    media_type: application/json
+    rfc9457: false
+    envelope:
+      statusCode: integer, repeats the HTTP status
+      errors: array of validator failures
+      'errors[].path': array, JSON path of the failure
+      'errors[].property': string, e.g. "instance"
+      'errors[].message': string, e.g. 'requires property "latitude"'
+      'errors[].schema': object, the validator's own schema fragment, echoed back
+      'errors[].instance': object, the caller's submitted values, echoed back
+      'errors[].name': string, validator rule name, e.g. "required"
+      'errors[].argument': string, the offending property
+      'errors[].stack': string, e.g. 'instance requires property "latitude"'
+    stable_codes: false
+    note: >-
+      The provider's own v3 overview names this a defect: "v2 returned the raw
+      output of its schema validator, exposing internal paths such as
+      instance.latitude and offering no stable code to branch on." An agent
+      branching on v2 errors must parse `name`/`argument` strings. The response
+      also echoes the caller's submitted instance back — a consideration when
+      request bodies carry anything sensitive.
+  - version: v3
+    status: reference draft
+    format: rfc9457
+    media_type: application/problem+json
+    rfc9457: true
+    envelope:
+      type: URI, stable identifier for the kind of problem (required)
+      title: short human-readable summary (required)
+      status: HTTP status code (required)
+      detail: human-readable explanation of this occurrence
+      errors: array, one entry per parameter at fault
+      'errors[].parameter': the parameter name, e.g. "latitude"
+      'errors[].code': stable machine code, e.g. "out_of_range"
+      'errors[].detail': human-readable explanation
+    stable_codes: true
+    type_uri_pattern: https://astronomyapi.com/problems/{problem}
+    note: >-
+      Declared in openapi/astronomy-api-v3-openapi.yaml under
+      components.schemas.Problem and referenced from every 400/401/422 response
+      of all five operations. The full registry of `type` URIs is NOT published —
+      only the example `https://astronomyapi.com/problems/invalid-parameter` and
+      the example code `out_of_range` appear. Codes below marked
+      `observed: example` are the only ones the provider has named.
+problem_types:
+  - id: invalid-parameter
+    type: https://astronomyapi.com/problems/invalid-parameter
+    title: Invalid parameter
+    status: 422
+    contract: v3
+    observed: example
+    source: openapi/astronomy-api-v3-openapi.yaml#/components/schemas/Problem
+    detail_example: latitude must be between -90 and 90 degrees.
+    remediation: >-
+      Read `errors[].parameter` and `errors[].code` and correct that parameter.
+      Do not retry unchanged.
+statuses:
+  - status: 200
+    contract: both
+    meaning: Success. The v2 docs state "Successful requests always respond with HTTP code 200."
+  - status: 400
+    contract: v3
+    title: Bad Request
+    meaning: The request could not be parsed.
+    retryable: false
+    source: openapi/astronomy-api-v3-openapi.yaml#/components/responses/BadRequest
+    note: >-
+      New in v3. v2 returned 422 for every validation failure, parseable or not;
+      v3 splits 400 (unparseable) from 422 (unacceptable).
+  - status: 401
+    contract: v3
+    title: Unauthorized
+    meaning: The application key was missing or not recognised.
+    retryable: false
+    source: openapi/astronomy-api-v3-openapi.yaml#/components/responses/Unauthorized
+  - status: 403
+    contract: v2
+    title: Forbidden
+    meaning: >-
+      Authentication failure. The docs are explicit that v2 answers a bad
+      credential with 403, not 401 — "In an event of an authentication failure, a
+      403 Forbidden response will be returned, which probably means you
+      encrypted the string incorrectly, or your credentials are wrong."
+    retryable: false
+    source: https://docs.astronomyapi.com/
+    remediation: >-
+      Re-derive the Basic string as base64(applicationId:applicationSecret); if
+      calling from a browser, confirm the application's Origin matches the
+      calling domain.
+  - status: 422
+    contract: both
+    title: Unprocessable Entity
+    meaning: >-
+      v2: any request validation failure. v3: the request was understood but a
+      parameter was unacceptable — including asking /positions for `earth`,
+      which v3 rejects deliberately because from the Earth it has no direction.
+    retryable: false
+    source: https://docs.astronomyapi.com/requests-and-response/error-responses
+  - status: 429
+    contract: v2
+    title: Too Many Requests
+    meaning: >-
+      Rate limited on IP and overall consumption. Not declared in any OpenAPI
+      definition and carries no documented Retry-After or RateLimit-* header.
+    retryable: true
+    retry_guidance: >-
+      "Retrying after some time will resolve this error" — no interval is
+      published. See rate-limits/astronomy-api-rate-limits.yml.
+    source: https://docs.astronomyapi.com/known-issues
+  - status: 504
+    contract: v2
+    title: Gateway Timeout
+    meaning: Endpoint timeout, specifically on the studio image endpoints.
+    retryable: true
+    retry_guidance: >-
+      Provider-stated as safe to retry unchanged: "Retrying the request with the
+      same request parameters will work."
+    source: https://docs.astronomyapi.com/known-issues
+gaps:
+  - No published registry of v3 `type` URIs; only one example exists.
+  - No published enumeration of v3 `errors[].code` values; only `out_of_range` is named.
+  - 429 and 504 are documented in prose only and appear in no machine-readable definition.
+  - v2 declares no error schema at all in its OpenAPI — only response descriptions.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

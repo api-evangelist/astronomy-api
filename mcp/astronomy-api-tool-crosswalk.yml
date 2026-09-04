@@ -1,0 +1,99 @@
+generated: '2026-09-04'
+method: derived
+source: >-
+  Binds the candidate tool list in mcp/astronomy-api-mcp.yml to the operations
+  declared in openapi/astronomy-api-v3-openapi.yaml, and maps both onto the
+  production v2 operations in openapi/. No live MCP or GraphQL schema exists to
+  introspect; every binding below is a one-to-one match to a declared
+  operationId, so confidence is high on the v3 column and stated explicitly on
+  the v2 column where the shapes differ.
+provider: Astronomy API
+providerId: astronomy-api
+description: >-
+  Astronomy API has no MCP server and no GraphQL surface, so this crosswalk
+  binds a DERIVED candidate tool set to real operations rather than a shipped
+  tool set. Its value is the v2/v3 column: it shows which production endpoint an
+  agent must call today for each tool the v3 contract would make available.
+surfaces:
+  openapi_v3:
+    file: openapi/astronomy-api-v3-openapi.yaml
+    base: https://api.astronomyapi.com/api/v3
+    status: reference draft — published contract, not yet shipped
+    gated: false
+  openapi_v2:
+    files:
+      - openapi/astronomy-api-bodies-api-openapi.yml
+      - openapi/astronomy-api-events-api-openapi.yml
+      - openapi/astronomy-api-search-api-openapi.yml
+      - openapi/astronomy-api-studio-api-openapi.yml
+    base: https://api.astronomyapi.com/api/v2
+    status: production
+    gated: false
+    note: Callable with an Application ID and Secret; authentication is required for every operation.
+  graphql:
+    endpoint: null
+    present: false
+  mcp:
+    url: null
+    present: false
+crosswalk:
+  - tool: get_positions
+    category: read
+    rest: [getPositions]
+    rest_v2: ['GET /bodies/positions', 'GET /bodies/positions/{body}']
+    binding: one-to-one
+    confidence: high
+    note: >-
+      In v3 one operation covers both v2 endpoints — a body list replaces the
+      path segment. The v2 definitions declare no operationIds, so the v2 column
+      is given as method+path.
+  - tool: get_events
+    category: read
+    rest: [getEvents]
+    rest_v2: ['GET /bodies/events/{body}']
+    binding: one-to-one
+    confidence: high
+    note: >-
+      v2 accepts only `sun` and `moon` and returns eclipses; v3 accepts any body
+      and adds apsides. A tool bound to v2 cannot answer apsis questions.
+  - tool: search_catalogue
+    category: read
+    rest: [search]
+    rest_v2: ['GET /search']
+    binding: one-to-one
+    confidence: high
+  - tool: create_star_chart
+    category: render
+    rest: [createStarChart]
+    rest_v2: ['POST /studio/star-chart']
+    binding: one-to-one
+    confidence: high
+    note: >-
+      Request shape differs: v3 lifts `time` out of the observer object and
+      flattens `view.parameters.position`.
+  - tool: create_moon_phase
+    category: render
+    rest: [createMoonPhase]
+    rest_v2: ['POST /studio/moon-phase']
+    binding: one-to-one
+    confidence: high
+mcp_only: []
+rest_only:
+  - operation: GET /bodies
+    version: v2
+    reason: >-
+      Returns a fixed list of ten body identifiers. v3 removes it and carries
+      the list in the specification as an enum, so no tool needs it — a client
+      holds the list directly.
+coverage:
+  v3_operations: 5
+  v3_operations_bound: 5
+  v2_operations: 7
+  v2_operations_bound: 6
+  tools: 5
+  tools_bound: 5
+  mcp_only: 0
+  rest_only: 1
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

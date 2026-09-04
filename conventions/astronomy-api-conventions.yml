@@ -1,0 +1,205 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://docs.astronomyapi.com/ (Getting Started),
+  https://docs.astronomyapi.com/requests-and-response/* (observer parameters,
+  tabular responses, rows responses, error responses),
+  https://docs.astronomyapi.com/known-issues,
+  https://docs.astronomyapi.com/api-v3-reference-draft/v3 and
+  .../migrating-from-v2, plus openapi/astronomy-api-v3-openapi.yaml and the four
+  v2 definitions in openapi/.
+provider: Astronomy API
+providerId: astronomy-api
+description: >-
+  Cross-cutting runtime semantics for Astronomy API. Read alongside
+  errors/astronomy-api-problem-types.yml, lifecycle/astronomy-api-lifecycle.yml,
+  authentication/astronomy-api-authentication.yml and
+  rate-limits/astronomy-api-rate-limits.yml. Where v2 and v3 differ, both are
+  stated: v2 is what is callable today, v3 is the published reference draft.
+authentication:
+  v2:
+    style: HTTP Basic
+    header: 'Authorization: Basic base64(applicationId:applicationSecret)'
+    credential: Application ID + Application Secret, created per Application in the dashboard
+    secret_retrievability: >-
+      "The Application Secret is visible to you only once during application
+      creation ... If you lost your secret create a new application and delete
+      the old application." There is no rotation flow — rotation means replacing
+      the application.
+    browser_note: >-
+      An Application carries an `Origin` value; the API echoes it as the CORS
+      allow-origin header. Browser and widget callers must set it to their site.
+    failure_status: 403
+  v3:
+    style: HTTP Bearer
+    header: 'Authorization: Bearer <application key>'
+    query_string_keys: refused by design
+    quote: >-
+      "Keys are never accepted in the query string, where they would be recorded
+      in logs and browser history."
+    failure_status: 401
+  see: authentication/astronomy-api-authentication.yml
+idempotency:
+  coverage: na
+  scope: []
+  mechanism: none
+  header: null
+  retention: null
+  rationale: >-
+    Astronomy API has no state-changing surface to protect. Five of seven v2
+    operations and three of five v3 operations are GETs. The two POSTs
+    (/studio/star-chart, /studio/moon-phase) are pure renders: they take an
+    observer, a time and a style and return `{ "data": { "imageUrl": "..." } }`.
+    They create no account-visible resource, charge nothing per call, and cannot
+    be double-spent. `na` rather than `none` is the honest reading — there is no
+    replay hazard for an idempotency key to mitigate, so its absence is not a
+    gap.
+  related:
+    deterministic_rendering: >-
+      "Images are cached. An identical request returns the same URL without
+      re-rendering." (v3 Studio). The same request therefore yields the same
+      artifact, which gives an agent replay-safety in practice without a key
+      mechanism, but it is a caching statement and not a durability or
+      exactly-once guarantee.
+    retry_safety: >-
+      The provider explicitly blesses blind retry on 504: "Retrying the request
+      with the same request parameters will work."
+reversibility:
+  grade: na
+  applies: false
+  write_surface:
+    - operation: createStarChart
+      path: POST /studio/star-chart
+      effect: Renders an image and returns a URL. No resource is created in the caller's account.
+      reversal: none-required
+    - operation: createMoonPhase
+      path: POST /studio/moon-phase
+      effect: Renders an image and returns a URL. No resource is created in the caller's account.
+      reversal: none-required
+  rationale: >-
+    There is nothing to take back. The public API neither stores caller data,
+    nor moves money, nor changes any state an agent could need to undo — the two
+    POSTs are image renders whose entire output is a URL in the response body.
+    No cancel, refund, void, restore or delete operation exists anywhere in
+    either contract, and none is needed. The only genuinely destructive action
+    in the product lives in the human dashboard, not the API: "once an
+    application is deleted there's no way to recover it" — an irreversible
+    action, but not an API operation and not reachable by an agent.
+  window: null
+  window_note: >-
+    No reversal window is asserted because no reversal path exists. Nothing in
+    the provider's documentation states one.
+pagination:
+  v2:
+    style: limit-offset
+    surface: GET /search only
+    params:
+      - limit
+      - offset
+    note: >-
+      Declared as STRINGS in v2 because query parameters arrive as text — the
+      provider names this as a v2 defect. The other v2 endpoints are unpaginated
+      and bounded by the request's own date range instead.
+  v3:
+    style: opaque-cursor
+    surface: GET /positions
+    params:
+      - limit
+      - cursor
+    response_field: meta.sampling.nextCursor
+    quote: >-
+      "Large spans paginate. With a fine step a long span can run to tens of
+      thousands of samples; when limit is reached, meta.sampling.nextCursor
+      carries the continuation."
+    note: /search in v3 keeps limit + offset, now typed as integers.
+response_shape:
+  envelope: 'All successful responses are wrapped in a top-level `data` object.'
+  v2_variants:
+    - name: table
+      selector: output=table
+      shape: data.table.rows[].cells[]
+      purpose: For template rendering.
+      source: https://docs.astronomyapi.com/requests-and-response/tabular-responses
+    - name: rows
+      selector: output=rows
+      shape: data.rows[].positions[]
+      purpose: For list rendering.
+      source: https://docs.astronomyapi.com/requests-and-response/tabular-responses-1
+  v2_variants_note: >-
+    Two shapes for the same data, chosen by a query parameter — a parsing burden
+    the provider removes in v3: "One shape now. Laying it out is the client's
+    job."
+  v3:
+    shape: data[].samples[]
+    meta: Every response carries a `meta` block; `meta.units` declares the unit of every angle.
+    typing: >-
+      Numbers are JSON numbers, not strings. Right ascension is in hours,
+      every other angle in degrees. Formatted sexagesimal strings are opt-in via
+      include=formatted rather than always sent.
+    size_effect: 'Provider states the positions response is about 60% smaller than v2 while carrying more.'
+field_conventions:
+  v2_casing: >-
+    Mixed — snake_case in query strings (from_date, match_type) and camelCase in JSON bodies (backgroundStyle)
+  v3_casing: camelCase throughout, in both query strings and bodies
+  observer_parameters:
+    required: [latitude, longitude, from_date, to_date, time]
+    optional: [elevation]
+    source: https://docs.astronomyapi.com/requests-and-response/observer-parameters
+    v3_change: >-
+      `time` folds into `from`/`to` as instants, `step` (ISO 8601 duration)
+      controls sampling, `elevation` becomes optional, and an explicit
+      `timezone` replaces v2's coordinate-inferred zone.
+  enumerations:
+    - name: Constellation IDs
+      url: https://docs.astronomyapi.com/requests-and-response/constellation-enums
+    - name: Deep space object types
+      url: https://docs.astronomyapi.com/requests-and-response/dso-enums
+    - name: Bodies
+      note: >-
+        Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune,
+        Pluto. Fixed list; carried in the v3 specification as an enum rather
+        than fetched. `earth` is excluded in v3 and returns 422.
+expansion:
+  supported: true
+  mechanism: include
+  values: [formatted]
+  scope: v3
+  note: >-
+    Opt-in field expansion — the only one. `include=formatted` returns the
+    sexagesimal display strings alongside the numbers. There is no sparse-field
+    selection and no `expand` of related objects.
+metadata:
+  custom_metadata_supported: false
+  note: No caller-supplied metadata or tagging on any request.
+request_tracing:
+  request_id_header: null
+  documented: false
+  note: >-
+    No request-id or correlation header is documented or declared. A caller
+    reporting a fault to contact@astronomyapi.com has no identifier to quote.
+versioning:
+  style: url-path
+  current: /api/v2
+  next: /api/v3
+  header_negotiation: false
+  see: lifecycle/astronomy-api-lifecycle.yml
+errors:
+  v2_shape: 'Raw JSON-Schema validator output: { statusCode, errors[] } with no stable code.'
+  v3_shape: 'RFC 9457 problem details, application/problem+json, stable `type` URI plus per-parameter `code`.'
+  see: errors/astronomy-api-problem-types.yml
+rate_limit_signalling:
+  headers: none documented
+  status: 429
+  retry_after: not served
+  guidance: '"Retrying after some time will resolve this error" — no interval published.'
+  see: rate-limits/astronomy-api-rate-limits.yml
+dry_run_mode:
+  supported: false
+  grade: na
+  note: >-
+    No sandbox, no test mode, no test credential prefix and no simulation
+    parameter. There is nothing to rehearse: every operation is a read or a
+    render, so a dry run and the real call would do the same thing.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

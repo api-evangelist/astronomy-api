@@ -1,0 +1,161 @@
+generated: '2026-09-04'
+method: probed
+source: >-
+  Live unauthenticated GET of the five canonical /.well-known/ paths on every host
+  this record knows: the registrable domain, the API host from every OpenAPI
+  servers[] block, the documentation host, and the widget CDN host.
+note: >-
+  NOTHING IS SERVED. astronomyapi.com is an Angular single-page app whose origin
+  answers HTTP 200 with the same 13,109-byte HTML shell for every unmatched path
+  (the app's compiled route table is "", auth/sign-in, auth/signup, auth/logout,
+  auth/password-reset, dashboard, dashboard/applications/new, privacy-policy,
+  terms-of-service — nothing under /.well-known/). Those 200s are the SPA
+  catch-all, not documents, and are recorded as misses. api.astronomyapi.com is
+  an AWS API Gateway that answers 403 {"message":"Missing Authentication Token"}
+  for any unmapped route. docs.astronomyapi.com (GitBook) 404s. www does not
+  resolve. No WellKnown or SecurityTxt pointer is emitted, because none of these
+  hosts publishes one.
+hosts:
+  - host: astronomyapi.com
+    note: Angular SPA; every path returns the same 200 HTML shell (soft-404).
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        result: soft-404
+        content_type: text/html
+        bytes: 13109
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 200
+        result: soft-404
+        content_type: text/html
+        bytes: 13109
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        result: soft-404
+        content_type: text/html
+        bytes: 13109
+        file: null
+      - path: /.well-known/api-catalog
+        status: 200
+        result: soft-404
+        content_type: text/html
+        bytes: 13109
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        result: soft-404
+        content_type: text/html
+        bytes: 13109
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 200
+        result: soft-404
+        content_type: text/html
+        bytes: 13109
+        file: null
+      - path: /.well-known/agent.json
+        status: 200
+        result: soft-404
+        content_type: text/html
+        bytes: 13109
+        file: null
+  - host: api.astronomyapi.com
+    note: AWS API Gateway; unmapped routes return 403 Missing Authentication Token.
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+        result: not-served
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 403
+        result: not-served
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 403
+        result: not-served
+        file: null
+      - path: /.well-known/oauth-protected-resource
+        status: 403
+        result: not-served
+        file: null
+      - path: /.well-known/api-catalog
+        status: 403
+        result: not-served
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 403
+        result: not-served
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 403
+        result: not-served
+        file: null
+      - path: /.well-known/agent.json
+        status: 403
+        result: not-served
+        file: null
+  - host: docs.astronomyapi.com
+    note: GitBook-hosted documentation; genuine 404s.
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        result: not-served
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        result: not-served
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        result: not-served
+        file: null
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+        result: not-served
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        result: not-served
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        result: not-served
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        result: not-served
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        result: not-served
+        file: null
+  - host: widgets.astronomyapi.com
+    note: S3/CloudFront origin serving the widget bundle; 403 AccessDenied elsewhere.
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+        result: not-served
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 403
+        result: not-served
+        file: null
+      - path: /.well-known/agent.json
+        status: 403
+        result: not-served
+        file: null
+  - host: www.astronomyapi.com
+    note: Does not resolve to a serving origin; connection failed (curl exit, no HTTP status).
+    documents:
+      - path: /.well-known/security.txt
+        status: 0
+        result: unreachable
+        file: null
+summary:
+  hosts_probed: 5
+  paths_probed: 28
+  documents_served: 0
+  agent_card_found: false
+  security_txt_found: false

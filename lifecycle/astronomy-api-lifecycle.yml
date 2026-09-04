@@ -1,0 +1,162 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://docs.astronomyapi.com/api-v3-reference-draft/v3,
+  https://docs.astronomyapi.com/api-v3-reference-draft/v3/migrating-from-v2,
+  https://docs.astronomyapi.com/changelog,
+  https://docs.astronomyapi.com/known-issues,
+  openapi/astronomy-api-v3-openapi.yaml, and probes of status.astronomyapi.com
+  and demo.astronomyapi.com on 2026-09-04.
+provider: Astronomy API
+providerId: astronomy-api
+versioning:
+  scheme: url-path
+  pattern: https://api.astronomyapi.com/api/v{n}
+  current: v2
+  current_note: The production surface. All four v2 definitions in openapi/ target /api/v2.
+  next: v3
+  next_status: reference draft
+  next_evidence: >-
+    "v3 is being built. These pages are published as each endpoint is settled,
+    so that the design can be read and argued with before it ships. Anything not
+    yet listed in the sidebar is still being written."
+  next_note: >-
+    Unusually good practice for a provider this small: the v3 contract is
+    published as a complete OpenAPI 3.1 definition and a field-by-field
+    migration guide BEFORE it ships, explicitly so consumers can argue with the
+    design. Saved here as openapi/astronomy-api-v3-openapi.yaml.
+  history:
+    - version: v1
+      released: '2017-08-13'
+      status: retired
+      evidence: Changelog 1.0.0 "Introduced planetary positions api".
+    - version: v2
+      released: '2020-09-23'
+      status: current
+      evidence: Changelog 2.0.0 "Migrate API to v2 / New dashboard / Go public on v2 API".
+    - version: v3
+      released: null
+      status: draft
+      evidence: Published reference draft with OpenAPI; no ship date announced.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations:
+    - operation: GET /bodies
+      version: v2
+      status: removed-in-v3
+      evidence: >-
+        "GET /bodies is gone. It returned a fixed list of ten identifiers that
+        never change. That list is in the specification, so bodies is an
+        enumerated type in generated clients and there is nothing to fetch."
+      note: >-
+        Not marked `deprecated: true` in the v2 OpenAPI, and no Deprecation or
+        Sunset header is served. The removal is announced only in the v3
+        migration prose.
+    - operation: GET /bodies/positions/{body}
+      version: v2
+      status: replaced-in-v3
+      evidence: 'Migration table: `/bodies/positions/{body}` → `?bodies=mars`.'
+    - operation: GET /bodies/events/{body}
+      version: v2
+      status: replaced-in-v3
+      evidence: 'Migration table: `/bodies/events/{body}` → `/events?bodies=moon`.'
+  removed_fields:
+    - field: position.horizonal.*
+      reason: A misspelling of `horizontal` that duplicated it; removed in v3.
+    - field: position.constellation.id
+      reason: A lowercase copy of the abbreviation; removed in v3.
+    - field: output=table|rows
+      reason: One response shape in v3; layout is the client's job.
+  corrected_fields:
+    - field: extraInfo.phase.angel
+      correction: Renamed to `phase.angle` — a misspelling that reached the wire.
+    - field: extraInfo.phase.fraction
+      correction: >-
+        Value corrected. v2 reported 0–0.067 and ran backwards (largest at new
+        moon, zero at full). v3 reports the lit fraction of the disc, 0 at new
+        to 1 at full. The provider states plainly that "anything that
+        compensated for the old behaviour needs unwinding."
+      severity: breaking-semantics
+  continuity_commitment:
+    published: true
+    quote: >-
+      "v2 is unchanged and continues to work; nothing here affects it." /
+      "v2 is unchanged and keeps working. Move when it suits you."
+    note: >-
+      An explicit no-forced-migration statement, but with no dated sunset
+      attached, so it is a promise of continuity rather than a deprecation
+      policy. There is nothing an agent or a client can read at runtime.
+support:
+  sla_published: false
+  status_page:
+    published: false
+    probed:
+      - url: https://status.astronomyapi.com
+        result: does not resolve (no HTTP response)
+        checked: '2026-09-04'
+    note: >-
+      No status page of any kind. This matters more than usual here: the
+      provider's own homepage says "High traffic and usage have led to service
+      outages", and the docs document both 429 and 504 as expected conditions,
+      so consumers have documented instability and no incident channel.
+  channels:
+    - type: email
+      value: contact@astronomyapi.com
+      source: https://docs.astronomyapi.com/known-issues
+    - type: github-issues
+      value: https://github.com/AstronomyAPI/Samples/issues
+      source: 'https://docs.astronomyapi.com/ — "Please create a ticket on Github"'
+  known_issues_page:
+    url: https://docs.astronomyapi.com/known-issues
+    published: true
+    note: >-
+      A first-party, plain-spoken known-issues page covering 504 timeouts, 429
+      throttling, coordinate precision differences and moon orientation by
+      hemisphere. Rare and worth crediting.
+  demo:
+    url: http://demo.astronomyapi.com
+    linked_from: https://docs.astronomyapi.com/
+    probed:
+      - url: https://demo.astronomyapi.com
+        result: does not resolve (no HTTP response)
+        checked: '2026-09-04'
+    note: >-
+      The docs still point developers at demo.astronomyapi.com for "code samples
+      and demos" (added in changelog 2.11.0, 2022-12-31); the host no longer
+      answers. A dead link in the provider's own Getting Started page.
+contracts_harvested:
+  - file: openapi/astronomy-api-v3-openapi.yaml
+    fetched: '2026-09-04'
+    http_status: 200
+    bytes: 46792
+    url: >-
+      https://1238588302-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F-MKQ7_I-c79Ln1c6Chop-3789850253%2Fuploads%2Fgit-blob-c743ca2b9574a9aee2b1314404f74fd87c7a6cfc%2Fastronomy-api-v3.yaml?alt=media
+    discovered_via: >-
+      https://docs.astronomyapi.com/llms-full.txt — the v3 reference pages embed
+      the definition with GitBook's {% openapi src=... %} block, which names the
+      uploaded file. It is not linked as a spec anywhere on the rendered site
+      and is not at any conventional path: /openapi.json, /openapi.yaml,
+      /swagger.json, /api-docs and /docs were probed on both the API host (403
+      "Missing Authentication Token" — the AWS API Gateway default) and the docs
+      host (404), and astronomyapi.com/openapi.json returns the SPA shell.
+    ownership_check: >-
+      PASSES. The document says it belongs to this provider, independently of
+      where it was fetched: info.title "AstronomyAPI", info.contact.url
+      https://astronomyapi.com, license url https://astronomyapi.com/terms, and
+      servers[0] https://api.astronomyapi.com/api/v3 — the same host as the
+      production v2 baseURL, one path segment along. The gitbook.io fetch URL is
+      the provider's own documentation CDN: docs.astronomyapi.com is a GitBook
+      site and the file is an upload inside its space, referenced from the
+      provider's own pages.
+    verbatim: true
+changelog:
+  url: https://docs.astronomyapi.com/changelog
+  artifact: changelog/astronomy-api-changelog.yml
+  latest_entry: '2023-11-05'
+  stale: true
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

@@ -1,0 +1,80 @@
+generated: '2026-09-04'
+method: derived
+status: candidate
+source: >-
+  DERIVED from openapi/astronomy-api-v3-openapi.yaml after searching for a
+  published server and finding none. Searched: docs.astronomyapi.com (llms.txt
+  index of all 29 pages, and llms-full.txt in full — no occurrence of "MCP" or
+  "Model Context Protocol"), the AstronomyAPI GitHub organization (3 public
+  repos: Samples, Widgets, Documentation), and npm.
+provider: Astronomy API
+providerId: astronomy-api
+description: >-
+  Astronomy API ships NO MCP server. This is a candidate tool list derived from
+  the operations of the provider's own v3 OpenAPI, offered as a design starting
+  point. Nothing here is callable — no endpoint exists, and none is invented.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  auth_note: >-
+    Stated for a future server, not observed: the underlying API takes HTTP
+    Basic (v2, Application ID + Secret) or Bearer (v3, application key). There
+    is no OAuth of any kind — see well-known/astronomy-api-well-known.yml.
+  verified: derived
+probes:
+  - url: https://mcp.astronomyapi.com/mcp
+    method: POST
+    result: host does not resolve (no HTTP response)
+    checked: '2026-09-04'
+  - url: https://api.astronomyapi.com/mcp
+    method: POST tools/list
+    http_status: 403
+    body: '{"message":"Missing Authentication Token"}'
+    result: >-
+      Not an MCP endpoint. This is the AWS API Gateway default response for any
+      unmapped route on the API host — identical to what /.well-known/security.txt
+      and /openapi.json return there — so it is a miss, not a gated server.
+    checked: '2026-09-04'
+tools:
+  - name: get_positions
+    description: Where the Sun, the Moon and the planets appear from an observer's location, sampled between two instants.
+    backs: getPositions
+    rest: GET /api/v3/positions
+    consequence: read
+  - name: get_events
+    description: Eclipses and apsides falling between two instants as seen from the observer's location.
+    backs: getEvents
+    rest: GET /api/v3/events
+    consequence: read
+  - name: search_catalogue
+    description: Find deep sky objects and stars by name or by sky position.
+    backs: search
+    rest: GET /api/v3/search
+    consequence: read
+  - name: create_star_chart
+    description: Render a star chart for an observer, time and framing, and return its image URL.
+    backs: createStarChart
+    rest: POST /api/v3/studio/star-chart
+    consequence: write
+    write_note: Renders an image; creates no caller-owned resource and needs no reversal.
+  - name: create_moon_phase
+    description: Render an image of the Moon for an observer and time, and return its image URL.
+    backs: createMoonPhase
+    rest: POST /api/v3/studio/moon-phase
+    consequence: write
+    write_note: Renders an image; creates no caller-owned resource and needs no reversal.
+input_schemas:
+  source: >-
+    Each candidate tool would inherit its inputSchema verbatim from the backing
+    operation's parameters and requestBody in
+    openapi/astronomy-api-v3-openapi.yaml — 22 reusable parameters and 5
+    request/response schema trees are already declared there, so no schema needs
+    authoring.
+  fabricated: false
+crosswalk: mcp/astronomy-api-tool-crosswalk.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
