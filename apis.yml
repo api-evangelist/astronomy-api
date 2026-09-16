@@ -120,37 +120,9 @@ apis:
     url: openapi/astronomy-api-studio-api-openapi.yml
   - type: Overlay
     url: overlays/astronomy-api-studio-api-overlay.yaml
-- aid: astronomy-api:astronomy-api-v3
-  name: Astronomy API v3
-  description: >-
-    Version 3 of the Astronomy API, published by the provider as a reference
-    draft with a complete OpenAPI 3.1 definition before it ships — "so that the
-    design can be read and argued with". A breaking redesign of the v2 request
-    and response shapes: JSON numbers instead of strings, one representation per
-    value, a declared meta.units block, ISO 8601 instants with an explicit
-    sampling step and timezone, cursor pagination on positions, RFC 9457 problem
-    details, bearer authentication, and apsis events alongside eclipses. Five
-    operations across positions, events, search and the two studio renderers.
-    NOT YET IN PRODUCTION — /api/v2 remains the callable surface.
-  humanURL: https://docs.astronomyapi.com/api-v3-reference-draft/v3
-  baseURL: https://api.astronomyapi.com/api/v3
-  tags:
-  - Astronomy
-  - Positions
-  - Events
-  - Star Charts
-  properties:
-  - type: OpenAPI
-    url: openapi/astronomy-api-v3-openapi.yaml
+common:
   - type: Overlay
     url: overlays/astronomy-api-v3-overlay.yaml
-  - type: Documentation
-    url: https://docs.astronomyapi.com/api-v3-reference-draft/v3
-    title: v3 reference draft
-  - type: Documentation
-    url: https://docs.astronomyapi.com/api-v3-reference-draft/v3/migrating-from-v2
-    title: Migrating from v2
-common:
   - type: Website
     url: https://astronomyapi.com/
   - type: AgenticAccess
