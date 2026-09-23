@@ -1,22 +1,16 @@
 openapi: 3.2.0
 info:
-  title: Astronomy Bodies Studio API
-  version: '2.0'
-  description: 'AstronomyAPI is a web API for retrieving astronomical information
-
-    including celestial body positions, moon phase imagery, star charts,
-
-    astronomical events, and deep space object search for any geographic
-
-    location and date/time combination.
-
-    '
+  title: Astronomy Studio API
   contact:
     name: AstronomyAPI
     url: https://astronomyapi.com
+  version: '1.0'
+  description: 'Operations tagged Studio across 2 of this provider''s published API definitions: astronomy-api-openapi.yml, astronomy-api-v3-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.astronomyapi.com/api/v2
   description: Astronomy API v2
+- url: https://api.astronomyapi.com/api/v3
+  description: Production
 tags:
 - name: Studio
   description: Generated imagery (moon phase and star charts)
@@ -68,6 +62,11 @@ paths:
       responses:
         '200':
           description: Image URL returned in payload
+      operationId: postStudioMoonPhase
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.astronomyapi.com/api/v2
+      description: Astronomy API v2
   /studio/star-chart:
     post:
       tags:
@@ -105,7 +104,265 @@ paths:
       responses:
         '200':
           description: Star chart image URL
+      operationId: postStudioStarChart
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.astronomyapi.com/api/v2
+      description: Astronomy API v2
 components:
+  responses:
+    Unauthorized:
+      description: The application key was missing or not recognised.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Image:
+      description: The rendered image.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ImageResult'
+    UnprocessableEntity:
+      description: The request was understood but a parameter was unacceptable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    BadRequest:
+      description: The request could not be parsed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  schemas:
+    MoonPhaseRequest:
+      allOf:
+      - $ref: '#/components/schemas/StudioRequest'
+      - type: object
+        required:
+        - view
+        properties:
+          view:
+            type: object
+            required:
+            - type
+            properties:
+              type:
+                type: string
+                examples:
+                - portrait-simple
+                - landscape-simple
+              orientation:
+                type: string
+                enum:
+                - north-up
+                - south-up
+                default: north-up
+          style:
+            type: object
+            properties:
+              moonStyle:
+                type: string
+                enum:
+                - sketch
+                - default
+                - shaded
+              backgroundStyle:
+                type: string
+                enum:
+                - stars
+                - solid
+              backgroundColor:
+                type: string
+              headingColor:
+                type: string
+              textColor:
+                type: string
+    StarChartRequest:
+      allOf:
+      - $ref: '#/components/schemas/StudioRequest'
+      - type: object
+        required:
+        - view
+        properties:
+          style:
+            type: string
+            description: Named visual theme.
+            examples:
+            - default
+            - red
+            - navy
+            - inverted
+          view:
+            oneOf:
+            - $ref: '#/components/schemas/AreaView'
+            - $ref: '#/components/schemas/ConstellationView'
+    AreaView:
+      type: object
+      description: A patch of sky centred on a given position.
+      required:
+      - type
+      - parameters
+      properties:
+        type:
+          type: string
+          const: area
+        parameters:
+          type: object
+          required:
+          - position
+          properties:
+            zoom:
+              type: integer
+              minimum: 1
+              maximum: 9
+              default: 3
+            position:
+              type: object
+              required:
+              - rightAscension
+              - declination
+              description: 'v2 wrapped these in a further `equatorial` object.
+
+                There is only one frame here, so v3 does not.
+
+                '
+              properties:
+                rightAscension:
+                  type: number
+                  minimum: 0
+                  maximum: 24
+                declination:
+                  type: number
+                  minimum: -90
+                  maximum: 90
+    Problem:
+      type: object
+      description: 'An error, as RFC 9457 problem details. v2 returned the raw output of
+
+        its schema validator, which exposed internal paths such as
+
+        `instance.latitude` and had no stable machine-readable code.
+
+        '
+      required:
+      - type
+      - title
+      - status
+      properties:
+        type:
+          type: string
+          format: uri
+          description: Stable identifier for the kind of problem.
+          examples:
+          - https://astronomyapi.com/problems/invalid-parameter
+        title:
+          type: string
+          examples:
+          - Invalid parameter
+        status:
+          type: integer
+          examples:
+          - 422
+        detail:
+          type: string
+          examples:
+          - latitude must be between -90 and 90 degrees.
+        errors:
+          type: array
+          description: One entry per parameter at fault.
+          items:
+            type: object
+            required:
+            - parameter
+            - code
+            - detail
+            properties:
+              parameter:
+                type: string
+                examples:
+                - latitude
+              code:
+                type: string
+                examples:
+                - out_of_range
+              detail:
+                type: string
+    ConstellationView:
+      type: object
+      description: Framed on a named constellation.
+      required:
+      - type
+      - parameters
+      properties:
+        type:
+          type: string
+          const: constellation
+        parameters:
+          type: object
+          required:
+          - constellation
+          properties:
+            constellation:
+              type: string
+              description: IAU abbreviation, lowercase.
+              examples:
+              - ori
+              - and
+    ImageResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - imageUrl
+          properties:
+            imageUrl:
+              type: string
+              format: uri
+    StudioRequest:
+      type: object
+      description: 'What the studio endpoints share. `time` sits beside `observer`
+
+        rather than inside it as v2 had it; a moment is not a property of a
+
+        place.
+
+        '
+      required:
+      - observer
+      - time
+      properties:
+        observer:
+          $ref: '#/components/schemas/Observer'
+        time:
+          type: string
+          format: date-time
+        format:
+          type: string
+          enum:
+          - png
+          - svg
+          default: png
+    Observer:
+      type: object
+      required:
+      - latitude
+      - longitude
+      - elevation
+      properties:
+        latitude:
+          type: number
+          description: Degrees, positive north.
+        longitude:
+          type: number
+          description: Degrees, positive east.
+        elevation:
+          type: number
+          description: Metres above sea level.
   securitySchemes:
     basicAuth:
       type: http
@@ -117,3 +374,16 @@ components:
         `Authorization: Basic base64(applicationId:applicationSecret)`.
 
         '
+    applicationKey:
+      type: http
+      scheme: bearer
+      description: 'The application key, sent as `Authorization: Bearer <key>`. Keys are
+
+        never accepted in the query string, where they would be recorded in
+
+        logs and browser history.
+
+        '
+x-refined-from:
+- astronomy-api-openapi.yml
+- astronomy-api-v3-openapi.yaml

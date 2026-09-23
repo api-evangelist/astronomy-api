@@ -1,22 +1,16 @@
 openapi: 3.2.0
 info:
-  title: Astronomy Bodies Search API
-  version: '2.0'
-  description: 'AstronomyAPI is a web API for retrieving astronomical information
-
-    including celestial body positions, moon phase imagery, star charts,
-
-    astronomical events, and deep space object search for any geographic
-
-    location and date/time combination.
-
-    '
+  title: Astronomy Search API
   contact:
     name: AstronomyAPI
     url: https://astronomyapi.com
+  version: '1.0'
+  description: 'Operations tagged Search across 2 of this provider''s published API definitions: astronomy-api-openapi.yml, astronomy-api-v3-openapi.yaml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.astronomyapi.com/api/v2
   description: Astronomy API v2
+- url: https://api.astronomyapi.com/api/v3
+  description: Production
 tags:
 - name: Search
   description: Search for stars and deep space objects
@@ -64,7 +58,251 @@ paths:
       responses:
         '200':
           description: Search results
+      operationId: getSearch
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.astronomyapi.com/api/v2
+      description: Astronomy API v2
 components:
+  responses:
+    Unauthorized:
+      description: The application key was missing or not recognised.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    UnprocessableEntity:
+      description: The request was understood but a parameter was unacceptable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    BadRequest:
+      description: The request could not be parsed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  parameters:
+    SearchRightAscension:
+      name: rightAscension
+      in: query
+      required: false
+      description: 'Right ascension to search near, in hours. Must be given with
+
+        `declination`. v2 called this `ra` and took it as a string.
+
+        '
+      schema:
+        type: number
+        minimum: 0
+        maximum: 24
+    SearchDeclination:
+      name: declination
+      in: query
+      required: false
+      description: 'Declination to search near, in degrees. Must be given with
+
+        `rightAscension`. v2 called this `dec` and took it as a string.
+
+        '
+      schema:
+        type: number
+        minimum: -90
+        maximum: 90
+    OrderBy:
+      name: orderBy
+      in: query
+      required: false
+      description: 'Field to sort by. v2 spelled this `order_by`.
+
+        '
+      schema:
+        type: string
+        enum:
+        - name
+    MatchType:
+      name: matchType
+      in: query
+      required: false
+      description: 'How `term` is matched. v2 spelled this `match_type`.
+
+        '
+      schema:
+        type: string
+        enum:
+        - exact
+        - fuzzy
+        default: fuzzy
+    Term:
+      name: term
+      in: query
+      required: false
+      description: Name or catalogue designation to search for.
+      schema:
+        type: string
+        minLength: 1
+        examples:
+        - andromeda
+        - M31
+    SearchLimit:
+      name: limit
+      in: query
+      required: false
+      description: 'Most results to return. v2 declared this as a string because query
+
+        parameters arrive as text; v3 declares the type it means.
+
+        '
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+    Offset:
+      name: offset
+      in: query
+      required: false
+      description: Results to skip. Declared as an integer, not a string.
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+  schemas:
+    NamedType:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    Problem:
+      type: object
+      description: 'An error, as RFC 9457 problem details. v2 returned the raw output of
+
+        its schema validator, which exposed internal paths such as
+
+        `instance.latitude` and had no stable machine-readable code.
+
+        '
+      required:
+      - type
+      - title
+      - status
+      properties:
+        type:
+          type: string
+          format: uri
+          description: Stable identifier for the kind of problem.
+          examples:
+          - https://astronomyapi.com/problems/invalid-parameter
+        title:
+          type: string
+          examples:
+          - Invalid parameter
+        status:
+          type: integer
+          examples:
+          - 422
+        detail:
+          type: string
+          examples:
+          - latitude must be between -90 and 90 degrees.
+        errors:
+          type: array
+          description: One entry per parameter at fault.
+          items:
+            type: object
+            required:
+            - parameter
+            - code
+            - detail
+            properties:
+              parameter:
+                type: string
+                examples:
+                - latitude
+              code:
+                type: string
+                examples:
+                - out_of_range
+              detail:
+                type: string
+    CatalogueObject:
+      type: object
+      required:
+      - id
+      - name
+      - type
+      - rightAscension
+      - declination
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          examples:
+          - Andromeda Galaxy
+        type:
+          $ref: '#/components/schemas/NamedType'
+        subType:
+          $ref: '#/components/schemas/NamedType'
+        crossIdentification:
+          type: array
+          description: The same object's designations in other catalogues.
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              catalogId:
+                type: string
+        rightAscension:
+          type: number
+          description: 'Hours, J2000. v2 nested this under
+
+            `position.equatorial.rightAscension.hours` and returned it
+
+            as a string.
+
+            '
+        declination:
+          type: number
+          description: Degrees, J2000.
+        formatted:
+          type: object
+          description: Present only with `include=formatted`.
+          properties:
+            rightAscension:
+              type: string
+            declination:
+              type: string
+    SearchResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        meta:
+          type: object
+          required:
+          - limit
+          - offset
+          properties:
+            limit:
+              type: integer
+            offset:
+              type: integer
+            total:
+              type: integer
+              description: Total matches, not only those returned.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogueObject'
   securitySchemes:
     basicAuth:
       type: http
@@ -76,3 +314,16 @@ components:
         `Authorization: Basic base64(applicationId:applicationSecret)`.
 
         '
+    applicationKey:
+      type: http
+      scheme: bearer
+      description: 'The application key, sent as `Authorization: Bearer <key>`. Keys are
+
+        never accepted in the query string, where they would be recorded in
+
+        logs and browser history.
+
+        '
+x-refined-from:
+- astronomy-api-openapi.yml
+- astronomy-api-v3-openapi.yaml

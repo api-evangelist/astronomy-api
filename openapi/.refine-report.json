@@ -1,10 +1,8 @@
 {
   "provider": "astronomy-api",
   "sources": [
-    "astronomy-api-bodies-api-openapi.yml",
-    "astronomy-api-events-api-openapi.yml",
-    "astronomy-api-search-api-openapi.yml",
-    "astronomy-api-studio-api-openapi.yml"
+    "_original/astronomy-api-openapi.yml",
+    "_original/astronomy-api-v3-openapi.yaml"
   ],
   "outputs": [
     "astronomy-api-bodies-api-openapi.yml",
@@ -16,11 +14,18 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "astronomy-api-bodies-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "astronomy-api-events-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "astronomy-api-search-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "astronomy-api-studio-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "astronomy-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "astronomy-api-v3-openapi.yaml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "tag 'Bodies' spans 2 source specs (astronomy-api-openapi.yml, astronomy-api-v3-openapi.yaml): per-path servers applied",
+    "tag 'Search' spans 2 source specs (astronomy-api-openapi.yml, astronomy-api-v3-openapi.yaml): per-path servers applied",
+    "tag 'Studio' spans 2 source specs (astronomy-api-openapi.yml, astronomy-api-v3-openapi.yaml): per-path servers applied",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "astronomy-api-bodies-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "astronomy-api-events-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "astronomy-api-search-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "astronomy-api-studio-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
