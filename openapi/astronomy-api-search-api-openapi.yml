@@ -64,25 +64,6 @@ paths:
     - url: https://api.astronomyapi.com/api/v2
       description: Astronomy API v2
 components:
-  responses:
-    Unauthorized:
-      description: The application key was missing or not recognised.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-    UnprocessableEntity:
-      description: The request was understood but a parameter was unacceptable.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-    BadRequest:
-      description: The request could not be parsed.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
   parameters:
     SearchRightAscension:
       name: rightAscension
@@ -97,30 +78,17 @@ components:
         type: number
         minimum: 0
         maximum: 24
-    SearchDeclination:
-      name: declination
+    Term:
+      name: term
       in: query
       required: false
-      description: 'Declination to search near, in degrees. Must be given with
-
-        `rightAscension`. v2 called this `dec` and took it as a string.
-
-        '
-      schema:
-        type: number
-        minimum: -90
-        maximum: 90
-    OrderBy:
-      name: orderBy
-      in: query
-      required: false
-      description: 'Field to sort by. v2 spelled this `order_by`.
-
-        '
+      description: Name or catalogue designation to search for.
       schema:
         type: string
-        enum:
-        - name
+        minLength: 1
+        examples:
+        - andromeda
+        - M31
     MatchType:
       name: matchType
       in: query
@@ -134,17 +102,19 @@ components:
         - exact
         - fuzzy
         default: fuzzy
-    Term:
-      name: term
+    SearchDeclination:
+      name: declination
       in: query
       required: false
-      description: Name or catalogue designation to search for.
+      description: 'Declination to search near, in degrees. Must be given with
+
+        `rightAscension`. v2 called this `dec` and took it as a string.
+
+        '
       schema:
-        type: string
-        minLength: 1
-        examples:
-        - andromeda
-        - M31
+        type: number
+        minimum: -90
+        maximum: 90
     SearchLimit:
       name: limit
       in: query
@@ -168,17 +138,18 @@ components:
         type: integer
         default: 0
         minimum: 0
+    OrderBy:
+      name: orderBy
+      in: query
+      required: false
+      description: 'Field to sort by. v2 spelled this `order_by`.
+
+        '
+      schema:
+        type: string
+        enum:
+        - name
   schemas:
-    NamedType:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-        name:
-          type: string
     Problem:
       type: object
       description: 'An error, as RFC 9457 problem details. v2 returned the raw output of
@@ -303,6 +274,35 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CatalogueObject'
+    NamedType:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+  responses:
+    UnprocessableEntity:
+      description: The request was understood but a parameter was unacceptable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    BadRequest:
+      description: The request could not be parsed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Unauthorized:
+      description: The application key was missing or not recognised.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
   securitySchemes:
     basicAuth:
       type: http
