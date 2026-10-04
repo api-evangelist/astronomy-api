@@ -64,9 +64,94 @@ paths:
     - url: https://api.astronomyapi.com/api/v2
       description: Astronomy API v2
 components:
+  parameters:
+    SearchDeclination:
+      name: declination
+      in: query
+      required: false
+      description: 'Declination to search near, in degrees. Must be given with
+
+        `rightAscension`. v2 called this `dec` and took it as a string.
+
+        '
+      schema:
+        type: number
+        minimum: -90
+        maximum: 90
+    OrderBy:
+      name: orderBy
+      in: query
+      required: false
+      description: 'Field to sort by. v2 spelled this `order_by`.
+
+        '
+      schema:
+        type: string
+        enum:
+        - name
+    Offset:
+      name: offset
+      in: query
+      required: false
+      description: Results to skip. Declared as an integer, not a string.
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    SearchRightAscension:
+      name: rightAscension
+      in: query
+      required: false
+      description: 'Right ascension to search near, in hours. Must be given with
+
+        `declination`. v2 called this `ra` and took it as a string.
+
+        '
+      schema:
+        type: number
+        minimum: 0
+        maximum: 24
+    Term:
+      name: term
+      in: query
+      required: false
+      description: Name or catalogue designation to search for.
+      schema:
+        type: string
+        minLength: 1
+        examples:
+        - andromeda
+        - M31
+    MatchType:
+      name: matchType
+      in: query
+      required: false
+      description: 'How `term` is matched. v2 spelled this `match_type`.
+
+        '
+      schema:
+        type: string
+        enum:
+        - exact
+        - fuzzy
+        default: fuzzy
+    SearchLimit:
+      name: limit
+      in: query
+      required: false
+      description: 'Most results to return. v2 declared this as a string because query
+
+        parameters arrive as text; v3 declares the type it means.
+
+        '
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
   responses:
-    UnprocessableEntity:
-      description: The request was understood but a parameter was unacceptable.
+    Unauthorized:
+      description: The application key was missing or not recognised.
       content:
         application/problem+json:
           schema:
@@ -77,46 +162,13 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Problem'
-    Unauthorized:
-      description: The application key was missing or not recognised.
+    UnprocessableEntity:
+      description: The request was understood but a parameter was unacceptable.
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Problem'
   schemas:
-    SearchResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        meta:
-          type: object
-          required:
-          - limit
-          - offset
-          properties:
-            limit:
-              type: integer
-            offset:
-              type: integer
-            total:
-              type: integer
-              description: Total matches, not only those returned.
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CatalogueObject'
-    NamedType:
-      type: object
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-        name:
-          type: string
     CatalogueObject:
       type: object
       required:
@@ -218,91 +270,39 @@ components:
                 - out_of_range
               detail:
                 type: string
-  parameters:
-    MatchType:
-      name: matchType
-      in: query
-      required: false
-      description: 'How `term` is matched. v2 spelled this `match_type`.
-
-        '
-      schema:
-        type: string
-        enum:
-        - exact
-        - fuzzy
-        default: fuzzy
-    Offset:
-      name: offset
-      in: query
-      required: false
-      description: Results to skip. Declared as an integer, not a string.
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-    SearchRightAscension:
-      name: rightAscension
-      in: query
-      required: false
-      description: 'Right ascension to search near, in hours. Must be given with
-
-        `declination`. v2 called this `ra` and took it as a string.
-
-        '
-      schema:
-        type: number
-        minimum: 0
-        maximum: 24
-    SearchDeclination:
-      name: declination
-      in: query
-      required: false
-      description: 'Declination to search near, in degrees. Must be given with
-
-        `rightAscension`. v2 called this `dec` and took it as a string.
-
-        '
-      schema:
-        type: number
-        minimum: -90
-        maximum: 90
-    Term:
-      name: term
-      in: query
-      required: false
-      description: Name or catalogue designation to search for.
-      schema:
-        type: string
-        minLength: 1
-        examples:
-        - andromeda
-        - M31
-    SearchLimit:
-      name: limit
-      in: query
-      required: false
-      description: 'Most results to return. v2 declared this as a string because query
-
-        parameters arrive as text; v3 declares the type it means.
-
-        '
-      schema:
-        type: integer
-        default: 20
-        minimum: 1
-        maximum: 100
-    OrderBy:
-      name: orderBy
-      in: query
-      required: false
-      description: 'Field to sort by. v2 spelled this `order_by`.
-
-        '
-      schema:
-        type: string
-        enum:
-        - name
+    SearchResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        meta:
+          type: object
+          required:
+          - limit
+          - offset
+          properties:
+            limit:
+              type: integer
+            offset:
+              type: integer
+            total:
+              type: integer
+              description: Total matches, not only those returned.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogueObject'
+    NamedType:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
   securitySchemes:
     basicAuth:
       type: http

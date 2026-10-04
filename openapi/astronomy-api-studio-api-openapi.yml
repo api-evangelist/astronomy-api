@@ -110,158 +110,56 @@ paths:
     - url: https://api.astronomyapi.com/api/v2
       description: Astronomy API v2
 components:
+  responses:
+    Unauthorized:
+      description: The application key was missing or not recognised.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Image:
+      description: The rendered image.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ImageResult'
+    BadRequest:
+      description: The request could not be parsed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    UnprocessableEntity:
+      description: The request was understood but a parameter was unacceptable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
   schemas:
-    MoonPhaseRequest:
-      allOf:
-      - $ref: '#/components/schemas/StudioRequest'
-      - type: object
-        required:
-        - view
-        properties:
-          view:
-            type: object
-            required:
-            - type
-            properties:
-              type:
-                type: string
-                examples:
-                - portrait-simple
-                - landscape-simple
-              orientation:
-                type: string
-                enum:
-                - north-up
-                - south-up
-                default: north-up
-          style:
-            type: object
-            properties:
-              moonStyle:
-                type: string
-                enum:
-                - sketch
-                - default
-                - shaded
-              backgroundStyle:
-                type: string
-                enum:
-                - stars
-                - solid
-              backgroundColor:
-                type: string
-              headingColor:
-                type: string
-              textColor:
-                type: string
-    Observer:
+    StudioRequest:
       type: object
-      required:
-      - latitude
-      - longitude
-      - elevation
-      properties:
-        latitude:
-          type: number
-          description: Degrees, positive north.
-        longitude:
-          type: number
-          description: Degrees, positive east.
-        elevation:
-          type: number
-          description: Metres above sea level.
-    ImageResult:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          type: object
-          required:
-          - imageUrl
-          properties:
-            imageUrl:
-              type: string
-              format: uri
-    StarChartRequest:
-      allOf:
-      - $ref: '#/components/schemas/StudioRequest'
-      - type: object
-        required:
-        - view
-        properties:
-          style:
-            type: string
-            description: Named visual theme.
-            examples:
-            - default
-            - red
-            - navy
-            - inverted
-          view:
-            oneOf:
-            - $ref: '#/components/schemas/AreaView'
-            - $ref: '#/components/schemas/ConstellationView'
-    ConstellationView:
-      type: object
-      description: Framed on a named constellation.
-      required:
-      - type
-      - parameters
-      properties:
-        type:
-          type: string
-          const: constellation
-        parameters:
-          type: object
-          required:
-          - constellation
-          properties:
-            constellation:
-              type: string
-              description: IAU abbreviation, lowercase.
-              examples:
-              - ori
-              - and
-    AreaView:
-      type: object
-      description: A patch of sky centred on a given position.
-      required:
-      - type
-      - parameters
-      properties:
-        type:
-          type: string
-          const: area
-        parameters:
-          type: object
-          required:
-          - position
-          properties:
-            zoom:
-              type: integer
-              minimum: 1
-              maximum: 9
-              default: 3
-            position:
-              type: object
-              required:
-              - rightAscension
-              - declination
-              description: 'v2 wrapped these in a further `equatorial` object.
+      description: 'What the studio endpoints share. `time` sits beside `observer`
 
-                There is only one frame here, so v3 does not.
+        rather than inside it as v2 had it; a moment is not a property of a
 
-                '
-              properties:
-                rightAscension:
-                  type: number
-                  minimum: 0
-                  maximum: 24
-                declination:
-                  type: number
-                  minimum: -90
-                  maximum: 90
+        place.
+
+        '
+      required:
+      - observer
+      - time
+      properties:
+        observer:
+          $ref: '#/components/schemas/Observer'
+        time:
+          type: string
+          format: date-time
+        format:
+          type: string
+          enum:
+          - png
+          - svg
+          default: png
     Problem:
       type: object
       description: 'An error, as RFC 9457 problem details. v2 returned the raw output of
@@ -314,55 +212,157 @@ components:
                 - out_of_range
               detail:
                 type: string
-    StudioRequest:
+    StarChartRequest:
+      allOf:
+      - $ref: '#/components/schemas/StudioRequest'
+      - type: object
+        required:
+        - view
+        properties:
+          style:
+            type: string
+            description: Named visual theme.
+            examples:
+            - default
+            - red
+            - navy
+            - inverted
+          view:
+            oneOf:
+            - $ref: '#/components/schemas/AreaView'
+            - $ref: '#/components/schemas/ConstellationView'
+    ConstellationView:
       type: object
-      description: 'What the studio endpoints share. `time` sits beside `observer`
-
-        rather than inside it as v2 had it; a moment is not a property of a
-
-        place.
-
-        '
+      description: Framed on a named constellation.
       required:
-      - observer
-      - time
+      - type
+      - parameters
       properties:
-        observer:
-          $ref: '#/components/schemas/Observer'
-        time:
+        type:
           type: string
-          format: date-time
-        format:
+          const: constellation
+        parameters:
+          type: object
+          required:
+          - constellation
+          properties:
+            constellation:
+              type: string
+              description: IAU abbreviation, lowercase.
+              examples:
+              - ori
+              - and
+    MoonPhaseRequest:
+      allOf:
+      - $ref: '#/components/schemas/StudioRequest'
+      - type: object
+        required:
+        - view
+        properties:
+          view:
+            type: object
+            required:
+            - type
+            properties:
+              type:
+                type: string
+                examples:
+                - portrait-simple
+                - landscape-simple
+              orientation:
+                type: string
+                enum:
+                - north-up
+                - south-up
+                default: north-up
+          style:
+            type: object
+            properties:
+              moonStyle:
+                type: string
+                enum:
+                - sketch
+                - default
+                - shaded
+              backgroundStyle:
+                type: string
+                enum:
+                - stars
+                - solid
+              backgroundColor:
+                type: string
+              headingColor:
+                type: string
+              textColor:
+                type: string
+    AreaView:
+      type: object
+      description: A patch of sky centred on a given position.
+      required:
+      - type
+      - parameters
+      properties:
+        type:
           type: string
-          enum:
-          - png
-          - svg
-          default: png
-  responses:
-    UnprocessableEntity:
-      description: The request was understood but a parameter was unacceptable.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-    BadRequest:
-      description: The request could not be parsed.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-    Image:
-      description: The rendered image.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ImageResult'
-    Unauthorized:
-      description: The application key was missing or not recognised.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
+          const: area
+        parameters:
+          type: object
+          required:
+          - position
+          properties:
+            zoom:
+              type: integer
+              minimum: 1
+              maximum: 9
+              default: 3
+            position:
+              type: object
+              required:
+              - rightAscension
+              - declination
+              description: 'v2 wrapped these in a further `equatorial` object.
+
+                There is only one frame here, so v3 does not.
+
+                '
+              properties:
+                rightAscension:
+                  type: number
+                  minimum: 0
+                  maximum: 24
+                declination:
+                  type: number
+                  minimum: -90
+                  maximum: 90
+    Observer:
+      type: object
+      required:
+      - latitude
+      - longitude
+      - elevation
+      properties:
+        latitude:
+          type: number
+          description: Degrees, positive north.
+        longitude:
+          type: number
+          description: Degrees, positive east.
+        elevation:
+          type: number
+          description: Metres above sea level.
+    ImageResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - imageUrl
+          properties:
+            imageUrl:
+              type: string
+              format: uri
   securitySchemes:
     basicAuth:
       type: http
