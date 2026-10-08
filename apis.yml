@@ -124,6 +124,10 @@ apis:
   - type: Overlay
     url: overlays/astronomy-api-studio-api-overlay.yaml
 common:
+  - type: Plans
+    url: plans/astronomy-api-plans-pricing.yml
+  - type: FinOps
+    url: finops/astronomy-api-finops.yml
   - url: https://astronomyapi.com/blog/
     type: Blog
   - type: Overlay
