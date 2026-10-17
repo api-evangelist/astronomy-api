@@ -117,6 +117,12 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Problem'
+    UnprocessableEntity:
+      description: The request was understood but a parameter was unacceptable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
     Image:
       description: The rendered image.
       content:
@@ -129,37 +135,7 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Problem'
-    UnprocessableEntity:
-      description: The request was understood but a parameter was unacceptable.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
   schemas:
-    StudioRequest:
-      type: object
-      description: 'What the studio endpoints share. `time` sits beside `observer`
-
-        rather than inside it as v2 had it; a moment is not a property of a
-
-        place.
-
-        '
-      required:
-      - observer
-      - time
-      properties:
-        observer:
-          $ref: '#/components/schemas/Observer'
-        time:
-          type: string
-          format: date-time
-        format:
-          type: string
-          enum:
-          - png
-          - svg
-          default: png
     Problem:
       type: object
       description: 'An error, as RFC 9457 problem details. v2 returned the raw output of
@@ -212,46 +188,6 @@ components:
                 - out_of_range
               detail:
                 type: string
-    StarChartRequest:
-      allOf:
-      - $ref: '#/components/schemas/StudioRequest'
-      - type: object
-        required:
-        - view
-        properties:
-          style:
-            type: string
-            description: Named visual theme.
-            examples:
-            - default
-            - red
-            - navy
-            - inverted
-          view:
-            oneOf:
-            - $ref: '#/components/schemas/AreaView'
-            - $ref: '#/components/schemas/ConstellationView'
-    ConstellationView:
-      type: object
-      description: Framed on a named constellation.
-      required:
-      - type
-      - parameters
-      properties:
-        type:
-          type: string
-          const: constellation
-        parameters:
-          type: object
-          required:
-          - constellation
-          properties:
-            constellation:
-              type: string
-              description: IAU abbreviation, lowercase.
-              examples:
-              - ori
-              - and
     MoonPhaseRequest:
       allOf:
       - $ref: '#/components/schemas/StudioRequest'
@@ -334,6 +270,30 @@ components:
                   type: number
                   minimum: -90
                   maximum: 90
+    StudioRequest:
+      type: object
+      description: 'What the studio endpoints share. `time` sits beside `observer`
+
+        rather than inside it as v2 had it; a moment is not a property of a
+
+        place.
+
+        '
+      required:
+      - observer
+      - time
+      properties:
+        observer:
+          $ref: '#/components/schemas/Observer'
+        time:
+          type: string
+          format: date-time
+        format:
+          type: string
+          enum:
+          - png
+          - svg
+          default: png
     Observer:
       type: object
       required:
@@ -350,6 +310,46 @@ components:
         elevation:
           type: number
           description: Metres above sea level.
+    ConstellationView:
+      type: object
+      description: Framed on a named constellation.
+      required:
+      - type
+      - parameters
+      properties:
+        type:
+          type: string
+          const: constellation
+        parameters:
+          type: object
+          required:
+          - constellation
+          properties:
+            constellation:
+              type: string
+              description: IAU abbreviation, lowercase.
+              examples:
+              - ori
+              - and
+    StarChartRequest:
+      allOf:
+      - $ref: '#/components/schemas/StudioRequest'
+      - type: object
+        required:
+        - view
+        properties:
+          style:
+            type: string
+            description: Named visual theme.
+            examples:
+            - default
+            - red
+            - navy
+            - inverted
+          view:
+            oneOf:
+            - $ref: '#/components/schemas/AreaView'
+            - $ref: '#/components/schemas/ConstellationView'
     ImageResult:
       type: object
       required:

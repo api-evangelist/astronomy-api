@@ -64,20 +64,77 @@ paths:
     - url: https://api.astronomyapi.com/api/v2
       description: Astronomy API v2
 components:
+  responses:
+    Unauthorized:
+      description: The application key was missing or not recognised.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    UnprocessableEntity:
+      description: The request was understood but a parameter was unacceptable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    BadRequest:
+      description: The request could not be parsed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
   parameters:
-    SearchDeclination:
-      name: declination
+    Term:
+      name: term
       in: query
       required: false
-      description: 'Declination to search near, in degrees. Must be given with
+      description: Name or catalogue designation to search for.
+      schema:
+        type: string
+        minLength: 1
+        examples:
+        - andromeda
+        - M31
+    SearchLimit:
+      name: limit
+      in: query
+      required: false
+      description: 'Most results to return. v2 declared this as a string because query
 
-        `rightAscension`. v2 called this `dec` and took it as a string.
+        parameters arrive as text; v3 declares the type it means.
+
+        '
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+    MatchType:
+      name: matchType
+      in: query
+      required: false
+      description: 'How `term` is matched. v2 spelled this `match_type`.
+
+        '
+      schema:
+        type: string
+        enum:
+        - exact
+        - fuzzy
+        default: fuzzy
+    SearchRightAscension:
+      name: rightAscension
+      in: query
+      required: false
+      description: 'Right ascension to search near, in hours. Must be given with
+
+        `declination`. v2 called this `ra` and took it as a string.
 
         '
       schema:
         type: number
-        minimum: -90
-        maximum: 90
+        minimum: 0
+        maximum: 24
     OrderBy:
       name: orderBy
       in: query
@@ -98,126 +155,20 @@ components:
         type: integer
         default: 0
         minimum: 0
-    SearchRightAscension:
-      name: rightAscension
+    SearchDeclination:
+      name: declination
       in: query
       required: false
-      description: 'Right ascension to search near, in hours. Must be given with
+      description: 'Declination to search near, in degrees. Must be given with
 
-        `declination`. v2 called this `ra` and took it as a string.
+        `rightAscension`. v2 called this `dec` and took it as a string.
 
         '
       schema:
         type: number
-        minimum: 0
-        maximum: 24
-    Term:
-      name: term
-      in: query
-      required: false
-      description: Name or catalogue designation to search for.
-      schema:
-        type: string
-        minLength: 1
-        examples:
-        - andromeda
-        - M31
-    MatchType:
-      name: matchType
-      in: query
-      required: false
-      description: 'How `term` is matched. v2 spelled this `match_type`.
-
-        '
-      schema:
-        type: string
-        enum:
-        - exact
-        - fuzzy
-        default: fuzzy
-    SearchLimit:
-      name: limit
-      in: query
-      required: false
-      description: 'Most results to return. v2 declared this as a string because query
-
-        parameters arrive as text; v3 declares the type it means.
-
-        '
-      schema:
-        type: integer
-        default: 20
-        minimum: 1
-        maximum: 100
-  responses:
-    Unauthorized:
-      description: The application key was missing or not recognised.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-    BadRequest:
-      description: The request could not be parsed.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-    UnprocessableEntity:
-      description: The request was understood but a parameter was unacceptable.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
+        minimum: -90
+        maximum: 90
   schemas:
-    CatalogueObject:
-      type: object
-      required:
-      - id
-      - name
-      - type
-      - rightAscension
-      - declination
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-          examples:
-          - Andromeda Galaxy
-        type:
-          $ref: '#/components/schemas/NamedType'
-        subType:
-          $ref: '#/components/schemas/NamedType'
-        crossIdentification:
-          type: array
-          description: The same object's designations in other catalogues.
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-              catalogId:
-                type: string
-        rightAscension:
-          type: number
-          description: 'Hours, J2000. v2 nested this under
-
-            `position.equatorial.rightAscension.hours` and returned it
-
-            as a string.
-
-            '
-        declination:
-          type: number
-          description: Degrees, J2000.
-        formatted:
-          type: object
-          description: Present only with `include=formatted`.
-          properties:
-            rightAscension:
-              type: string
-            declination:
-              type: string
     Problem:
       type: object
       description: 'An error, as RFC 9457 problem details. v2 returned the raw output of
@@ -270,6 +221,16 @@ components:
                 - out_of_range
               detail:
                 type: string
+    NamedType:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
     SearchResponse:
       type: object
       required:
@@ -293,16 +254,55 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CatalogueObject'
-    NamedType:
+    CatalogueObject:
       type: object
       required:
       - id
       - name
+      - type
+      - rightAscension
+      - declination
       properties:
         id:
           type: string
         name:
           type: string
+          examples:
+          - Andromeda Galaxy
+        type:
+          $ref: '#/components/schemas/NamedType'
+        subType:
+          $ref: '#/components/schemas/NamedType'
+        crossIdentification:
+          type: array
+          description: The same object's designations in other catalogues.
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              catalogId:
+                type: string
+        rightAscension:
+          type: number
+          description: 'Hours, J2000. v2 nested this under
+
+            `position.equatorial.rightAscension.hours` and returned it
+
+            as a string.
+
+            '
+        declination:
+          type: number
+          description: Degrees, J2000.
+        formatted:
+          type: object
+          description: Present only with `include=formatted`.
+          properties:
+            rightAscension:
+              type: string
+            declination:
+              type: string
   securitySchemes:
     basicAuth:
       type: http

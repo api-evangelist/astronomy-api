@@ -304,127 +304,21 @@ paths:
     - url: https://api.astronomyapi.com/api/v3
       description: Production
 components:
-  responses:
-    Unauthorized:
-      description: The application key was missing or not recognised.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-    BadRequest:
-      description: The request could not be parsed.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
-    UnprocessableEntity:
-      description: The request was understood but a parameter was unacceptable.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/Problem'
   schemas:
-    BodySamples:
+    Contact:
       type: object
       required:
-      - body
-      - samples
-      properties:
-        body:
-          $ref: '#/components/schemas/BodyIdentity'
-        samples:
-          type: array
-          items:
-            $ref: '#/components/schemas/Sample'
-    Observer:
-      type: object
-      required:
-      - latitude
-      - longitude
-      - elevation
-      properties:
-        latitude:
-          type: number
-          description: Degrees, positive north.
-        longitude:
-          type: number
-          description: Degrees, positive east.
-        elevation:
-          type: number
-          description: Metres above sea level.
-    EclipseEvent:
-      type: object
-      required:
-      - type
-      - kind
       - time
-      - contacts
-      - obscuration
+      - altitude
       properties:
-        type:
-          type: string
-          description: 'v2 combined this with `kind` into a single string such as
-
-            `partial_lunar_eclipse`, which had to be taken apart before
-
-            either half could be used.
-
-            '
-          enum:
-          - lunar_eclipse
-          - solar_eclipse
-        kind:
-          type: string
-          description: 'How complete the eclipse is as seen from this location.
-
-            `penumbral` occurs only for lunar eclipses and `annular`
-
-            only for solar ones.
-
-            '
-          enum:
-          - penumbral
-          - partial
-          - annular
-          - total
         time:
           type: string
           format: date-time
-          description: The peak of the eclipse.
         altitude:
           type: number
-          description: Degrees above the horizon at peak.
-        contacts:
-          $ref: '#/components/schemas/Contacts'
-        obscuration:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: Fraction of the body's disc covered at peak.
-        rise:
-          type: string
-          format: date-time
-          description: When the body rose on the day of the event.
-        set:
-          type: string
-          format: date-time
-          description: When the body set on the day of the event.
-    Distance:
-      type: object
-      required:
-      - au
-      - km
-      properties:
-        au:
-          type: number
-          description: Astronomical units from the observer.
-        km:
-          type: number
-          description: 'The same distance in kilometres. Returned so that callers do
+          description: 'Degrees above the horizon at that moment. Negative means the
 
-            not each hard-code their own value for the astronomical
-
-            unit and disagree with each other.
+            stage happens with the body below the horizon and so unseen.
 
             '
     Constellation:
@@ -497,30 +391,73 @@ components:
           $ref: '#/components/schemas/Phase'
         formatted:
           $ref: '#/components/schemas/Formatted'
-    Formatted:
+    ApsisEvent:
       type: object
-      description: 'Sexagesimal renderings of the angles above, present only when
+      description: 'The moment a body''s distance from the Earth stops changing
 
-        `include=formatted` is given.
+        direction. Every body has these, and they alternate.
+
+
+        For the Moon they are the familiar perigee and apogee. For a planet
+
+        the perigee falls within days of opposition, or of inferior
+
+        conjunction for Mercury and Venus, and is when it appears largest
+
+        and brightest. The Sun''s perigee is the Earth''s own perihelion, in
+
+        early January.
 
         '
+      required:
+      - type
+      - kind
+      - time
+      - distance
       properties:
-        rightAscension:
+        type:
           type: string
-          examples:
-          - 02h 26m 24s
-        declination:
+          enum:
+          - apsis
+        kind:
           type: string
-          examples:
-          - 13° 25' 12"
+          enum:
+          - perigee
+          - apogee
+          description: Nearest to the Earth, or farthest from it.
+        time:
+          type: string
+          format: date-time
         altitude:
-          type: string
-          examples:
-          - 41° 15' 36"
-        azimuth:
-          type: string
-          examples:
-          - 233° 0' 0"
+          type: number
+          description: Degrees above the horizon at that moment.
+        distance:
+          $ref: '#/components/schemas/Distance'
+    PositionsResponse:
+      type: object
+      required:
+      - meta
+      - data
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+        data:
+          type: array
+          description: One entry per requested body, in the order asked for.
+          items:
+            $ref: '#/components/schemas/BodySamples'
+    BodySamples:
+      type: object
+      required:
+      - body
+      - samples
+      properties:
+        body:
+          $ref: '#/components/schemas/BodyIdentity'
+        samples:
+          type: array
+          items:
+            $ref: '#/components/schemas/Sample'
     EventsResponse:
       type: object
       required:
@@ -616,155 +553,6 @@ components:
                 - out_of_range
               detail:
                 type: string
-    Event:
-      description: 'An event is one of two shapes, told apart by `type`. Eclipses carry
-
-        the moments they pass from one stage to the next; apsides carry a
-
-        distance. Neither has the other''s fields.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/EclipseEvent'
-      - $ref: '#/components/schemas/ApsisEvent'
-      discriminator:
-        propertyName: type
-        mapping:
-          lunar_eclipse: '#/components/schemas/EclipseEvent'
-          solar_eclipse: '#/components/schemas/EclipseEvent'
-          apsis: '#/components/schemas/ApsisEvent'
-    PositionsResponse:
-      type: object
-      required:
-      - meta
-      - data
-      properties:
-        meta:
-          $ref: '#/components/schemas/Meta'
-        data:
-          type: array
-          description: One entry per requested body, in the order asked for.
-          items:
-            $ref: '#/components/schemas/BodySamples'
-    Phase:
-      type: object
-      description: Returned for the Moon only.
-      required:
-      - angle
-      - fraction
-      - name
-      properties:
-        angle:
-          type: number
-          description: 'Degrees by which the Moon leads the Sun in ecliptic
-
-            longitude: 0 at new, 90 at first quarter, 180 at full.
-
-
-            v2 spelled this field `angel`.
-
-            '
-        fraction:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: 'Fraction of the Moon''s disc that is lit, from 0 at new to 1
-
-            at full.
-
-
-            v2''s figure for this was wrong twice over: it was scaled to
-
-            a range of 0 to 0.067, and it ran backwards, reporting its
-
-            largest value at new moon.
-
-            '
-        name:
-          type: string
-          enum:
-          - New Moon
-          - Waxing Crescent
-          - First Quarter
-          - Waxing Gibbous
-          - Full Moon
-          - Waning Gibbous
-          - Last Quarter
-          - Waning Crescent
-    BodyId:
-      type: string
-      description: 'Stable lowercase identifier for a body. This is the complete set.
-
-        '
-      enum:
-      - sun
-      - moon
-      - mercury
-      - venus
-      - mars
-      - jupiter
-      - saturn
-      - uranus
-      - neptune
-      - pluto
-    ApsisEvent:
-      type: object
-      description: 'The moment a body''s distance from the Earth stops changing
-
-        direction. Every body has these, and they alternate.
-
-
-        For the Moon they are the familiar perigee and apogee. For a planet
-
-        the perigee falls within days of opposition, or of inferior
-
-        conjunction for Mercury and Venus, and is when it appears largest
-
-        and brightest. The Sun''s perigee is the Earth''s own perihelion, in
-
-        early January.
-
-        '
-      required:
-      - type
-      - kind
-      - time
-      - distance
-      properties:
-        type:
-          type: string
-          enum:
-          - apsis
-        kind:
-          type: string
-          enum:
-          - perigee
-          - apogee
-          description: Nearest to the Earth, or farthest from it.
-        time:
-          type: string
-          format: date-time
-        altitude:
-          type: number
-          description: Degrees above the horizon at that moment.
-        distance:
-          $ref: '#/components/schemas/Distance'
-    Contact:
-      type: object
-      required:
-      - time
-      - altitude
-      properties:
-        time:
-          type: string
-          format: date-time
-        altitude:
-          type: number
-          description: 'Degrees above the horizon at that moment. Negative means the
-
-            stage happens with the body below the horizon and so unseen.
-
-            '
     Contacts:
       type: object
       description: 'The moments the eclipse passes from one stage to the next, each with
@@ -831,6 +619,121 @@ components:
             back as `cursor` to continue.
 
             '
+    Phase:
+      type: object
+      description: Returned for the Moon only.
+      required:
+      - angle
+      - fraction
+      - name
+      properties:
+        angle:
+          type: number
+          description: 'Degrees by which the Moon leads the Sun in ecliptic
+
+            longitude: 0 at new, 90 at first quarter, 180 at full.
+
+
+            v2 spelled this field `angel`.
+
+            '
+        fraction:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: 'Fraction of the Moon''s disc that is lit, from 0 at new to 1
+
+            at full.
+
+
+            v2''s figure for this was wrong twice over: it was scaled to
+
+            a range of 0 to 0.067, and it ran backwards, reporting its
+
+            largest value at new moon.
+
+            '
+        name:
+          type: string
+          enum:
+          - New Moon
+          - Waxing Crescent
+          - First Quarter
+          - Waxing Gibbous
+          - Full Moon
+          - Waning Gibbous
+          - Last Quarter
+          - Waning Crescent
+    EclipseEvent:
+      type: object
+      required:
+      - type
+      - kind
+      - time
+      - contacts
+      - obscuration
+      properties:
+        type:
+          type: string
+          description: 'v2 combined this with `kind` into a single string such as
+
+            `partial_lunar_eclipse`, which had to be taken apart before
+
+            either half could be used.
+
+            '
+          enum:
+          - lunar_eclipse
+          - solar_eclipse
+        kind:
+          type: string
+          description: 'How complete the eclipse is as seen from this location.
+
+            `penumbral` occurs only for lunar eclipses and `annular`
+
+            only for solar ones.
+
+            '
+          enum:
+          - penumbral
+          - partial
+          - annular
+          - total
+        time:
+          type: string
+          format: date-time
+          description: The peak of the eclipse.
+        altitude:
+          type: number
+          description: Degrees above the horizon at peak.
+        contacts:
+          $ref: '#/components/schemas/Contacts'
+        obscuration:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Fraction of the body's disc covered at peak.
+        rise:
+          type: string
+          format: date-time
+          description: When the body rose on the day of the event.
+        set:
+          type: string
+          format: date-time
+          description: When the body set on the day of the event.
+    BodyIdentity:
+      type: object
+      required:
+      - id
+      - name
+      properties:
+        id:
+          $ref: '#/components/schemas/BodyId'
+        name:
+          type: string
+          description: Display name.
+          examples:
+          - Mars
     Meta:
       type: object
       required:
@@ -881,20 +784,248 @@ components:
             type: string
         sampling:
           $ref: '#/components/schemas/Sampling'
-    BodyIdentity:
+    BodyId:
+      type: string
+      description: 'Stable lowercase identifier for a body. This is the complete set.
+
+        '
+      enum:
+      - sun
+      - moon
+      - mercury
+      - venus
+      - mars
+      - jupiter
+      - saturn
+      - uranus
+      - neptune
+      - pluto
+    Distance:
       type: object
       required:
-      - id
-      - name
+      - au
+      - km
       properties:
-        id:
-          $ref: '#/components/schemas/BodyId'
-        name:
+        au:
+          type: number
+          description: Astronomical units from the observer.
+        km:
+          type: number
+          description: 'The same distance in kilometres. Returned so that callers do
+
+            not each hard-code their own value for the astronomical
+
+            unit and disagree with each other.
+
+            '
+    Event:
+      description: 'An event is one of two shapes, told apart by `type`. Eclipses carry
+
+        the moments they pass from one stage to the next; apsides carry a
+
+        distance. Neither has the other''s fields.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/EclipseEvent'
+      - $ref: '#/components/schemas/ApsisEvent'
+      discriminator:
+        propertyName: type
+        mapping:
+          lunar_eclipse: '#/components/schemas/EclipseEvent'
+          solar_eclipse: '#/components/schemas/EclipseEvent'
+          apsis: '#/components/schemas/ApsisEvent'
+    Formatted:
+      type: object
+      description: 'Sexagesimal renderings of the angles above, present only when
+
+        `include=formatted` is given.
+
+        '
+      properties:
+        rightAscension:
           type: string
-          description: Display name.
           examples:
-          - Mars
+          - 02h 26m 24s
+        declination:
+          type: string
+          examples:
+          - 13° 25' 12"
+        altitude:
+          type: string
+          examples:
+          - 41° 15' 36"
+        azimuth:
+          type: string
+          examples:
+          - 233° 0' 0"
+    Observer:
+      type: object
+      required:
+      - latitude
+      - longitude
+      - elevation
+      properties:
+        latitude:
+          type: number
+          description: Degrees, positive north.
+        longitude:
+          type: number
+          description: Degrees, positive east.
+        elevation:
+          type: number
+          description: Metres above sea level.
   parameters:
+    Elevation:
+      name: elevation
+      in: query
+      required: false
+      description: 'Height of the observer above sea level, in metres. Defaults to sea
+
+        level. The upper bound covers the highest permanent observatories.
+
+        '
+      schema:
+        type: number
+        default: 0
+        minimum: -500
+        maximum: 9000
+    Timezone:
+      name: timezone
+      in: query
+      required: false
+      description: 'IANA zone the returned instants are expressed in. `auto` derives it
+
+        from the observer''s coordinates, which is what v2 always did and
+
+        remains the default. `UTC` is the unambiguous choice.
+
+        '
+      schema:
+        type: string
+        default: auto
+        examples:
+        - auto
+        - UTC
+        - Europe/London
+    EventTypes:
+      name: types
+      in: query
+      required: false
+      style: form
+      explode: false
+      description: 'Which kinds of event to report. Omit for all that apply to the
+
+        bodies asked for.
+
+        '
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - lunar_eclipse
+          - solar_eclipse
+          - apsis
+    To:
+      name: to
+      in: query
+      required: true
+      description: Last instant to sample. Must not precede `from`.
+      schema:
+        type: string
+        examples:
+        - '2024-06-22T00:00:00Z'
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque cursor from `meta.sampling.nextCursor`.
+      schema:
+        type: string
+    EventBodies:
+      name: bodies
+      in: query
+      required: false
+      style: form
+      explode: false
+      description: 'Which bodies to report events for. Omit for all of them.
+
+
+        v2 accepted only the Sun and the Moon here, because eclipses were
+
+        the only events it knew about. Every body has apsides, so v3
+
+        accepts the full list.
+
+        '
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/BodyId'
+    From:
+      name: from
+      in: query
+      required: true
+      description: 'First instant to sample, as an ISO 8601 date or date-time. A bare
+
+        date means midnight UTC on that date.
+
+        '
+      schema:
+        type: string
+        examples:
+        - '2024-06-21T00:00:00Z'
+        - '2024-06-21'
+    Include:
+      name: include
+      in: query
+      required: false
+      description: 'Optional extras, comma separated. `formatted` adds a parallel block
+
+        of sexagesimal strings for each angle, which v2 always sent whether
+
+        or not the caller wanted them.
+
+        '
+      schema:
+        type: string
+        examples:
+        - formatted
+    Origin:
+      name: origin
+      in: query
+      required: false
+      description: 'Whether to measure from the observer''s own position or from the
+
+        centre of the Earth. The difference is parallax, worth up to about
+
+        a degree for the Moon and arcseconds for the planets.
+
+        '
+      schema:
+        type: string
+        default: topocentric
+        enum:
+        - topocentric
+        - geocentric
+    Step:
+      name: step
+      in: query
+      required: false
+      description: 'Interval between samples, as an ISO 8601 duration. `P1D` reproduces
+
+        v2''s one-sample-per-day behaviour, which is the default.
+
+        '
+      schema:
+        type: string
+        default: P1D
+        pattern: ^P(?!$)(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?$
+        examples:
+        - PT1H
+        - PT15M
+        - P1D
     Bodies:
       name: bodies
       in: query
@@ -936,26 +1067,28 @@ components:
           value:
           - mars
           - venus
-    EventBodies:
-      name: bodies
+    Longitude:
+      name: longitude
       in: query
-      required: false
-      style: form
-      explode: false
-      description: 'Which bodies to report events for. Omit for all of them.
-
-
-        v2 accepted only the Sun and the Moon here, because eclipses were
-
-        the only events it knew about. Every body has apsides, so v3
-
-        accepts the full list.
-
-        '
+      required: true
+      description: Longitude of the observer, in degrees, positive east.
       schema:
-        type: array
-        items:
-          $ref: '#/components/schemas/BodyId'
+        type: number
+        minimum: -180
+        maximum: 180
+        examples:
+        - -0.0015
+    Latitude:
+      name: latitude
+      in: query
+      required: true
+      description: Latitude of the observer, in degrees, positive north.
+      schema:
+        type: number
+        minimum: -90
+        maximum: 90
+        examples:
+        - 51.4779
     Refraction:
       name: refraction
       in: query
@@ -971,66 +1104,6 @@ components:
         enum:
         - standard
         - none
-    Timezone:
-      name: timezone
-      in: query
-      required: false
-      description: 'IANA zone the returned instants are expressed in. `auto` derives it
-
-        from the observer''s coordinates, which is what v2 always did and
-
-        remains the default. `UTC` is the unambiguous choice.
-
-        '
-      schema:
-        type: string
-        default: auto
-        examples:
-        - auto
-        - UTC
-        - Europe/London
-    Step:
-      name: step
-      in: query
-      required: false
-      description: 'Interval between samples, as an ISO 8601 duration. `P1D` reproduces
-
-        v2''s one-sample-per-day behaviour, which is the default.
-
-        '
-      schema:
-        type: string
-        default: P1D
-        pattern: ^P(?!$)(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?$
-        examples:
-        - PT1H
-        - PT15M
-        - P1D
-    Latitude:
-      name: latitude
-      in: query
-      required: true
-      description: Latitude of the observer, in degrees, positive north.
-      schema:
-        type: number
-        minimum: -90
-        maximum: 90
-        examples:
-        - 51.4779
-    Elevation:
-      name: elevation
-      in: query
-      required: false
-      description: 'Height of the observer above sea level, in metres. Defaults to sea
-
-        level. The upper bound covers the highest permanent observatories.
-
-        '
-      schema:
-        type: number
-        default: 0
-        minimum: -500
-        maximum: 9000
     Limit:
       name: limit
       in: query
@@ -1041,98 +1114,25 @@ components:
         default: 1000
         minimum: 1
         maximum: 10000
-    EventTypes:
-      name: types
-      in: query
-      required: false
-      style: form
-      explode: false
-      description: 'Which kinds of event to report. Omit for all that apply to the
-
-        bodies asked for.
-
-        '
-      schema:
-        type: array
-        items:
-          type: string
-          enum:
-          - lunar_eclipse
-          - solar_eclipse
-          - apsis
-    Cursor:
-      name: cursor
-      in: query
-      required: false
-      description: Opaque cursor from `meta.sampling.nextCursor`.
-      schema:
-        type: string
-    To:
-      name: to
-      in: query
-      required: true
-      description: Last instant to sample. Must not precede `from`.
-      schema:
-        type: string
-        examples:
-        - '2024-06-22T00:00:00Z'
-    Origin:
-      name: origin
-      in: query
-      required: false
-      description: 'Whether to measure from the observer''s own position or from the
-
-        centre of the Earth. The difference is parallax, worth up to about
-
-        a degree for the Moon and arcseconds for the planets.
-
-        '
-      schema:
-        type: string
-        default: topocentric
-        enum:
-        - topocentric
-        - geocentric
-    Longitude:
-      name: longitude
-      in: query
-      required: true
-      description: Longitude of the observer, in degrees, positive east.
-      schema:
-        type: number
-        minimum: -180
-        maximum: 180
-        examples:
-        - -0.0015
-    Include:
-      name: include
-      in: query
-      required: false
-      description: 'Optional extras, comma separated. `formatted` adds a parallel block
-
-        of sexagesimal strings for each angle, which v2 always sent whether
-
-        or not the caller wanted them.
-
-        '
-      schema:
-        type: string
-        examples:
-        - formatted
-    From:
-      name: from
-      in: query
-      required: true
-      description: 'First instant to sample, as an ISO 8601 date or date-time. A bare
-
-        date means midnight UTC on that date.
-
-        '
-      schema:
-        type: string
-        examples:
-        - '2024-06-21T00:00:00Z'
-        - '2024-06-21'
+  responses:
+    UnprocessableEntity:
+      description: The request was understood but a parameter was unacceptable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    BadRequest:
+      description: The request could not be parsed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Unauthorized:
+      description: The application key was missing or not recognised.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
   securitySchemes:
     basicAuth:
       type: http
