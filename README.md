@@ -1,4 +1,4 @@
-# Astronomy API (astronomy-api)
+# Astronomy API
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,61 +66,143 @@
 
 AstronomyAPI is a web API for retrieving astronomical information including data about celestial bodies, moon phases, planet positions, star charts, and astronomical events for a given location and time. The API provides developers with access to celestial body positions, astronomical event data, star chart generation, moon phase imagery, and deep space object search capabilities for any geographic location and date/time combination.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/astronomy-api/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/astronomy-api/refs/heads/main/apis.yml)
+**Areas:** Astronomy · Celestial Data · Space · Moon Phases · Star Charts
 
-## Scope
+## Astronomy API on APIs.io
 
-- **Type:** Index
+Everything profiled for Astronomy API is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/astronomy-api/](https://apis.io/providers/astronomy-api/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (5)
 
-- Astronomy
-- Celestial Data
-- Space
-- Moon Phases
-- Star Charts
+- [Astronomy API](https://apis.io/apis/astronomy-api/astronomy-api/) — The Astronomy API provides access to astronomical data including celestial body positions, moon phases, planet positions, star charts, astronomical events,…
+- [Astronomy API Bodies API](https://apis.io/apis/astronomy-api/astronomy-api-bodies-api/) — Celestial body information and positions
+- [Astronomy API Events API](https://apis.io/apis/astronomy-api/astronomy-api-events-api/) — Astronomical events for a given location and date range
+- [Astronomy API Search API](https://apis.io/apis/astronomy-api/astronomy-api-search-api/) — Search for stars and deep space objects
+- [Astronomy API Studio API](https://apis.io/apis/astronomy-api/astronomy-api-studio-api/) — Generated imagery (moon phase and star charts)
 
-## Timestamps
+### Published properties
 
-- **Created:** 2024-03-30
-- **Modified:** 2026-04-19
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### MCP servers (1)
 
-### Astronomy API
+Model Context Protocol servers that expose the API to agents.
 
-The Astronomy API provides access to astronomical data including celestial body positions, moon phases, planet positions, star charts, astronomical events, and deep space object search for any location and time. Endpoints cover bodies, positions, events, studio image generation, star charts, moon phase imagery, and search for stars and deep space objects.
+- [astronomy-api-mcp.yml](https://apis.io/servers/astronomy-api/astronomy-api-mcp-yml/)
 
-- **Human URL:** [https://docs.astronomyapi.com/](https://docs.astronomyapi.com/)
-- **Base URL:** `https://api.astronomyapi.com/api/v2`
+#### Agentic access (1)
 
-#### Tags
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- Astronomy
-- Moon
-- Planets
-- Star Charts
+- [Astronomy Api Agentic Access](https://apis.io/agentic-access/astronomy-api/astronomy-api-agentic-access/)
 
-#### Properties
+#### Collections (5)
 
+Postman and Open Collection request collections.
+
+- [Astronomy API](https://apis.io/collections/astronomy-api/open-astronomy-api/)
+- [Astronomy Bodies API](https://apis.io/collections/astronomy-api/open-astronomy-api-bodies-api/)
+- [Astronomy Bodies Events API](https://apis.io/collections/astronomy-api/open-astronomy-api-events-api/)
+- [Astronomy Bodies Search API](https://apis.io/collections/astronomy-api/open-astronomy-api-search-api/)
+- [Astronomy Bodies Studio API](https://apis.io/collections/astronomy-api/open-astronomy-api-studio-api/)
+
+#### Overlays (5)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Astronomy Api Bodies Api Overlay](https://apis.io/overlays/astronomy-api/astronomy-api-bodies-api-overlay/)
+- [Astronomy Api Events Api Overlay](https://apis.io/overlays/astronomy-api/astronomy-api-events-api-overlay/)
+- [Astronomy Api Search Api Overlay](https://apis.io/overlays/astronomy-api/astronomy-api-search-api-overlay/)
+- [Astronomy Api Studio Api Overlay](https://apis.io/overlays/astronomy-api/astronomy-api-studio-api-overlay/)
+- [Astronomy Api V3 Overlay](https://apis.io/overlays/astronomy-api/astronomy-api-v3-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Astronomy Api Authentication](https://apis.io/security/astronomy-api/astronomy-api-authentication/)
+- [Astronomy Api Domain Security](https://apis.io/security/astronomy-api/astronomy-api-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Astronomy Api Plans Pricing](https://apis.io/plans/astronomy-api/astronomy-api-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Astronomy Api Rate Limits](https://apis.io/rate-limits/astronomy-api/astronomy-api-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Astronomy Api Finops](https://apis.io/finops/astronomy-api/astronomy-api-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://astronomyapi.com/)
 - [Documentation](https://docs.astronomyapi.com/)
-- [Getting Started](https://docs.astronomyapi.com/getting-started)
-- [Postman Collection](collections/astronomy-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/astronomy-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Support](https://github.com/AstronomyAPI/Samples/issues)
+- [Changelog](https://docs.astronomyapi.com/changelog)
+- [Blog](https://astronomyapi.com/blog/)
+- [Terms of service](https://astronomyapi.com/terms-of-service)
+- [Privacy policy](https://astronomyapi.com/privacy-policy)
+- [GitHub](https://github.com/AstronomyAPI)
 
-## Common Properties
+## API Evangelist rating
 
-- [GitHub Organization](https://github.com/AstronomyAPI)
-- [Portal](https://astronomyapi.com/)
-- [Documentation](https://docs.astronomyapi.com/)
-- [Sign Up](https://astronomyapi.com/auth/signup)
-- [Pricing](https://astronomyapi.com/pricing)
-- [Features](undefined)
-- [Use Cases](undefined)
-- [Integrations](undefined)
-- [L L Ms Txt](https://astronomyapi.com/llms.txt)
+**Kin Score 37.4** — thin · rubric 0.24.0 · scored 2026-10-17
 
-## Maintainers
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 47.0 |
+| Contract governance | 4.5 |
+| Operational transparency | 18.4 |
+| Developer ergonomics | 66.1 |
+| Access clarity | 13.2 |
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Agent readiness 26.1** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 16.7** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/astronomy-api/](https://apis.io/providers/astronomy-api/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Astronomy API: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/astronomy-api/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
